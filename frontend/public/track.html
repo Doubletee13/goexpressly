@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Track Package — GoExpressly</title>
+    <meta name="description"
+        content="Enter your GoExpressly tracking ID to see real-time status and full shipment history." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="../dist/css/main.min.css" />
+    <script>(function () { var t = localStorage.getItem('goexpressly-theme'); if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })();</script>
+</head>
+
+<body class="antialiased">
+
+    <!-- ── HEADER ───────────────────────────────────────────────────── -->
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass mt-3 px-5 py-3 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+                    <a href="index.html" class="flex items-center gap-3 shrink-0">
+                        <img src="../src/assets/logo-light.svg" alt="GoExpressly"
+                            class="h-10 sm:h-12 w-auto dark:hidden" />
+                        <img src="../src/assets/logo-dark.svg" alt="GoExpressly"
+                            class="h-10 sm:h-12 w-auto hidden dark:block" />
+                    </a>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <a href="index.html#features" class="hover:text-brand-500 transition-colors">Features</a>
+                    <a href="index.html#how-it-works" class="hover:text-brand-500 transition-colors">How It Works</a>
+                    <a href="track.html" class="text-brand-500 font-semibold">Track Package</a>
+                </nav>
+
+                <!-- Right actions -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button data-theme-toggle aria-label="Toggle theme"
+                        class="p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all">
+                        <svg data-icon="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                        <svg data-icon="moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+                    <a href="login.html" class="hidden sm:inline-flex btn-ghost text-sm py-2 px-4">Admin</a>
+
+                    <!-- Mobile hamburger -->
+                    <button id="mobile-menu-btn"
+                        class="md:hidden p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/30 dark:hover:bg-white/10 transition-all"
+                        aria-label="Open menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu"
+                class="hidden glass mt-2 px-5 py-4 flex-col gap-3 text-sm font-medium text-slate-700 dark:text-slate-200 md:hidden">
+                <a href="index.html#features" class="py-1 hover:text-brand-500 transition-colors">Features</a>
+                <a href="index.html#how-it-works" class="py-1 hover:text-brand-500 transition-colors">How It Works</a>
+                <a href="track.html"
+                    class="text-brand-500 font-semibold py-1 hover:text-brand-600 transition-colors">Track Package</a>
+                <a href="login.html" class="py-1 hover:text-brand-500 transition-colors">Admin Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20">
+        <div class="section max-w-3xl mx-auto">
+
+            <!-- Page title -->
+            <div class="text-center mb-10 animate-slide-up">
+                <h1 class="heading-lg text-slate-800 dark:text-slate-50 mb-3">Track your package</h1>
+                <p class="text-slate-500 dark:text-slate-400">Enter your tracking ID below to see real-time status and
+                    full journey history.</p>
+            </div>
+
+            <!-- Search form -->
+            <form id="track-form" class="glass p-6 sm:p-8 flex flex-col sm:flex-row gap-3 mb-8">
+                <input id="tracking-input" type="text" placeholder="e.g. GX-A1B2C3D4E5"
+                    class="form-input flex-1 font-mono text-base placeholder:font-sans" autocomplete="off"
+                    spellcheck="false" />
+                <button type="submit" id="track-btn" class="btn-primary shrink-0 py-3 px-8">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    Track
+                </button>
+            </form>
+
+            <div class="text-center mb-8">
+                <a href="index.html"
+                    class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Home
+                </a>
+            </div>
+
+            <!-- Loading state -->
+            <div id="state-loading" class="hidden text-center py-16">
+                <div
+                    class="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                </div>
+                <p class="text-slate-500 dark:text-slate-400">Fetching tracking data...</p>
+            </div>
+
+            <!-- Error state -->
+            <div id="state-error" class="hidden glass p-8 text-center">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <h2 class="heading-sm text-slate-800 dark:text-slate-100 mb-2">Package not found</h2>
+                <p id="error-message" class="text-slate-500 dark:text-slate-400 text-sm">We couldn't find a package with
+                    that tracking ID. Please check the ID and try again.</p>
+            </div>
+
+            <!-- Results -->
+            <div id="state-results" class="hidden space-y-6 animate-slide-up">
+
+                <!-- Current status card -->
+                <div class="glass-lg p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+                        <div>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mb-1 uppercase tracking-widest">
+                                Tracking ID</p>
+                            <p id="res-tracking-id" class="tracking-chip text-base"></p>
+                        </div>
+                        <div id="res-badge-wrap"></div>
+                    </div>
+                    <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Recipient</p>
+                            <p id="res-recipient" class="font-semibold text-slate-700 dark:text-slate-200"></p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Origin</p>
+                            <p id="res-origin" class="font-semibold text-slate-700 dark:text-slate-200">—</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Destination</p>
+                            <p id="res-destination" class="font-semibold text-slate-700 dark:text-slate-200">—</p>
+                        </div>
+                    </div>
+
+                    <!-- Current status highlight -->
+                    <div id="res-current-status-wrap" class="mt-6 glass rounded-xl p-4 flex items-center gap-3 hidden">
+                        <div class="w-3 h-3 rounded-full bg-brand-500 animate-pulse-soft shrink-0"></div>
+                        <div>
+                            <p class="text-xs text-slate-400 mb-0.5">Current Status</p>
+                            <p id="res-current-status" class="font-semibold text-slate-800 dark:text-slate-100"></p>
+                            <p id="res-current-location" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="glass-lg p-6 sm:p-8">
+                    <h2 class="heading-sm text-slate-800 dark:text-slate-50 mb-6">Journey Timeline</h2>
+                    <div id="res-timeline" class="space-y-0"></div>
+                    <p id="res-no-events" class="hidden text-center text-slate-400 py-8 text-sm">No tracking events
+                        logged yet.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/20 dark:border-white/10 py-8">
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="../src/assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto opacity-70 dark:hidden" />
+                <img src="../src/assets/logo-dark.svg" alt="GoExpressly"
+                    class="h-10 w-auto opacity-70 hidden dark:block" />
+            </a>
+            <p class="text-xs text-slate-400 dark:text-slate-600">&copy; 2026 GoExpressly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../dist/js/theme.min.js" defer></script>
+    <script src="../dist/js/api.min.js" defer></script>
+    <script src="../dist/js/track.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('flex');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

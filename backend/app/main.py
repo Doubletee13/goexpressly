@@ -41,10 +41,18 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
     )
 
-    # CORS — restrict in production to your actual frontend origin
+    # CORS — explicit origins required when allow_credentials=True
+    # A wildcard "*" is rejected by browsers when credentials are present.
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Tighten this before exposing to the internet
+        allow_origins=[
+            "http://localhost:5500",
+            "http://127.0.0.1:5500",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+        ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -5,8 +5,8 @@ A monorepo for the GoExpressly courier platform.
 ## Architecture
 
 This repository is designed as a monorepo. It currently contains:
-- `backend/` — The core logic, admin portal API, and tracking framework built with FastAPI.
-- `frontend/` — (Coming soon) The customer-facing website and tracking UI.
+- `backend/` — The core logic, admin portal API, and tracking framework built with FastAPI (Python).
+- `frontend/` — The customer-facing website and tracking UI built with HTML, Tailwind CSS, and vanilla JS.
 
 ---
 
@@ -62,9 +62,40 @@ uvicorn app.main:app --reload --port 8000
 ```
 Open **http://localhost:8000/docs** in your browser to interact with the Swagger API playground!
 
+---
+
+## Frontend (`/frontend`)
+
+The frontend is a lightweight, high-performance static UI utilizing a glassmorphic aesthetic.
+- **Tools:** HTML, Vanilla JS (`carousel.js`, `theme.js`, `api.js`), and Tailwind CSS CLI.
+- **Design System:** Custom CSS tokens for glass effect, soft shadows, and fully integrated Light/Dark modes based on `prefers-color-scheme`.
+- **Assets:** Fully generated imagery, loaded efficiently via WebP/optimized formats. No external dependencies.
+
+### 🚀 Local Development Setup
+
+**1. Navigate to the frontend directory:**
+```bash
+cd frontend
+```
+
+**2. Install dependencies:**
+```bash
+npm install
+```
+
+**3. Run the development CSS compiler:**
+Continually watches file changes and recompiles the Tailwind file `dist/css/main.min.css`:
+```bash
+npm run dev
+```
+
+**4. Open the app locally:**
+For development, you can simply open `/public/index.html` via Live Server or similar local web servers. Ensure your backend is running on `localhost:8000` (the frontend is configured to target it automatically during dev).
+
 ### 🐳 Docker (Production)
-The backend folder contains all necessary infrastructure files (`Dockerfile` and `docker-compose.yml`) to cleanly deploy the API service to any container host.
+A consolidated `docker-compose.yml` file is provided in the **root** folder. It builds both the FastAPI backend and the Nginx frontend reverse-proxy.
 
 ```bash
 docker compose up --build -d
 ```
+You can access the full frontend on `http://localhost/` and the backend is seamlessly proxied behind `/api/*`.

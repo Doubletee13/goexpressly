@@ -1,0 +1,48 @@
+services:
+  # ── Frontend (Nginx + Static SPA) ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+    container_name: goexpressly_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ── FastAPI Backend ───────────────────────────────────────────────────────
+  backend:
+    build: 
+      context: ./backend
+    container_name: goexpressly_backend
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── PostgreSQL Database ───────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: goexpressly_db
+    environment:
+      POSTGRES_DB: goexpressly
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d goexpressly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local

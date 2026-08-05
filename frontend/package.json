@@ -1,0 +1,16 @@
+{
+    "name": "goexpressly-frontend",
+    "version": "1.0.0",
+    "description": "GoExpressly public tracking and admin UI",
+    "scripts": {
+        "dev": "npx tailwindcss -i src/css/main.css -o dist/css/main.min.css --watch",
+        "build:css": "npx tailwindcss -i src/css/main.css -o dist/css/main.min.css --minify",
+        "build:js": "npx terser src/js/theme.js -o dist/js/theme.min.js && npx terser src/js/carousel.js -o dist/js/carousel.min.js && npx terser src/js/api.js -o dist/js/api.min.js && npx terser src/js/track.js -o dist/js/track.min.js && npx terser src/js/auth.js -o dist/js/auth.min.js && npx terser src/js/dashboard.js -o dist/js/dashboard.min.js",
+        "build": "npm run build:css && npm run build:js",
+        "dev:copy": "cp src/js/*.js dist/js/"
+    },
+    "devDependencies": {
+        "tailwindcss": "^3.4.19",
+        "terser": "^5.49.1"
+    }
+}

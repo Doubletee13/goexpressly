@@ -2,7 +2,8 @@ from __future__ import annotations
 """
 app/schemas/auth.py — Pydantic schemas for authentication.
 """
-from pydantic import BaseModel, EmailStr, field_validator
+from uuid import UUID
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 
@@ -20,7 +21,7 @@ class TokenResponse(BaseModel):
 
 class AdminOut(BaseModel):
     """Safe admin profile — never includes hashed_password."""
-    id: str
+    id: UUID
     email: str
     full_name: Optional[str] = None
     is_active: bool

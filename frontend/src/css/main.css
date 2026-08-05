@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts ─────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ── CSS Custom Properties (resolved by Tailwind dark class) ──────────── */
+@layer base {
+  :root {
+    --color-bg-from: #EFF3F8;
+    --color-bg-to: #D8EAF6;
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px rgba(31, 41, 55, 0.12);
+    --color-text: #1E293B;
+    --color-muted: #64748B;
+    --scrollbar-thumb: rgba(59, 158, 191, 0.4);
+  }
+
+  .dark {
+    --color-bg-from: #0F1623;
+    --color-bg-to: #162035;
+    --glass-bg: rgba(255, 255, 255, 0.07);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --color-text: #E2EBF5;
+    --color-muted: #94A3B8;
+    --scrollbar-thumb: rgba(91, 196, 232, 0.4);
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--color-bg-from) 0%, var(--color-bg-to) 100%);
+    background-attachment: fixed;
+    color: var(--color-text);
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+/* ── Component Utilities ──────────────────────────────────────────────── */
+@layer components {
+
+  /* Glass panel — the core visual unit */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 1rem;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .glass-lg {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 1.5rem;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white bg-brand-500 hover:bg-brand-600 active:bg-brand-700 shadow-md hover:shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2;
+  }
+
+  /* Ghost/outline button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold border border-current text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 bg-transparent hover:bg-brand-50 dark:hover:bg-brand-900/20;
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-red-500 hover:bg-red-600 active:bg-red-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2;
+  }
+
+  /* Form input */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl border text-sm font-medium bg-white/60 dark:bg-white/[0.08] border-white/70 dark:border-white/15 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all duration-200;
+    backdrop-filter: blur(8px);
+  }
+
+  /* Status badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-active {
+    @apply bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300;
+  }
+
+  .badge-delivered {
+    @apply bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300;
+  }
+
+  .badge-stopped {
+    @apply bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300;
+  }
+
+  .badge-deleted {
+    @apply bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300;
+  }
+
+  /* Section container */
+  .section {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+  }
+
+  /* Heading styles */
+  .heading-xl {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight;
+  }
+
+  .heading-lg {
+    @apply text-3xl sm:text-4xl font-bold tracking-tight;
+  }
+
+  .heading-md {
+    @apply text-2xl sm:text-3xl font-bold;
+  }
+
+  .heading-sm {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+
+  /* Tracking ID monospace chip */
+  .tracking-chip {
+    @apply font-mono text-sm font-semibold px-3 py-1 rounded-lg bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800;
+  }
+
+  /* Timeline step */
+  .timeline-step {
+    @apply relative flex gap-4 pb-8 last:pb-0;
+  }
+
+  .timeline-step::before {
+    content: '';
+    @apply absolute left-[18px] top-8 bottom-0 w-px bg-brand-200 dark:bg-brand-800;
+  }
+
+  .timeline-step:last-child::before {
+    display: none;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Dashboard sidebar nav links */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all w-full text-left;
+  }
+
+  .sidebar-link.active {
+    @apply bg-brand-500/15 dark:bg-brand-400/15 text-brand-600 dark:text-brand-400 font-semibold;
+  }
+
+  /* Dashboard form field labels */
+  .field-label {
+    @apply block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5;
+  }
+}
+
+/* ── Carousel Transitions ─────────────────────────────────────────────── */
+@layer utilities {
+  .carousel-slide {
+    @apply absolute inset-0 transition-opacity duration-500 ease-in-out;
+  }
+
+  .carousel-slide.active {
+    @apply opacity-100 z-10;
+  }
+
+  .carousel-slide.inactive {
+    @apply opacity-0 z-0;
+  }
+}

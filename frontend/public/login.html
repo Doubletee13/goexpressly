@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — GoExpressly</title>
+    <meta name="description" content="GoExpressly admin portal login." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="../dist/css/main.min.css" />
+    <script>(function () { var t = localStorage.getItem('goexpressly-theme'); if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })();</script>
+</head>
+
+<body class="antialiased min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- Background blobs -->
+    <div
+        class="fixed top-0 right-0 w-96 h-96 bg-brand-300/20 dark:bg-brand-800/20 rounded-full blur-3xl pointer-events-none">
+    </div>
+    <div
+        class="fixed bottom-0 left-0 w-80 h-80 bg-brand-200/20 dark:bg-brand-900/20 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <!-- Theme toggle (top right) -->
+    <div class="fixed top-5 right-5 z-50">
+        <button data-theme-toggle aria-label="Toggle theme"
+            class="glass p-2.5 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all">
+            <svg data-icon="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5" />
+                <path
+                    d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg data-icon="moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="w-full max-w-md animate-slide-up">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="index.html" class="inline-block mb-6 hover:-translate-y-1 transition-transform">
+                <img src="../src/assets/logo-light.svg" alt="GoExpressly" class="h-16 w-auto mx-auto dark:hidden" />
+                <img src="../src/assets/logo-dark.svg" alt="GoExpressly"
+                    class="h-16 w-auto mx-auto hidden dark:block" />
+            </a>
+            <h1 class="heading-md text-slate-800 dark:text-slate-50 mb-1">Admin Portal</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Sign in to manage packages and tracking events.</p>
+        </div>
+
+        <!-- Login card -->
+        <div class="glass-lg p-8">
+            <form id="login-form" novalidate class="space-y-5">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Email
+                        address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required class="form-input"
+                        placeholder="admin@example.com" />
+                </div>
+                <div>
+                    <label for="password"
+                        class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Password</label>
+                    <div class="relative">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                            class="form-input pr-11" placeholder="••••••••" />
+                        <button type="button" id="pw-toggle"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                            aria-label="Toggle password">
+                            <svg id="pw-eye-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg id="pw-eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Error message -->
+                <div id="login-error"
+                    class="hidden glass rounded-xl p-3 flex items-center gap-3 text-sm text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/50">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span id="login-error-text">Invalid email or password.</span>
+                </div>
+
+                <button type="submit" id="login-btn" class="btn-primary w-full text-base py-3.5">
+                    <span id="login-btn-text">Sign In</span>
+                    <svg id="login-spinner" class="w-5 h-5 hidden animate-spin" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 dark:text-slate-600 mt-6">
+            <a href="index.html" class="hover:text-brand-500 transition-colors">← Back to GoExpressly</a>
+        </p>
+    </div>
+
+    <script src="../dist/js/theme.min.js" defer></script>
+    <script src="../dist/js/api.min.js" defer></script>
+    <script src="../dist/js/auth.min.js" defer></script>
+</body>
+
+</html>
