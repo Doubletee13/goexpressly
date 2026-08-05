@@ -30,34 +30,71 @@ def _build_subject(package: Package, event: TrackingEvent) -> str:
 
 
 def _build_html_body(package: Package, event: TrackingEvent) -> str:
-    return f"""
-    <html><body style="font-family: Arial, sans-serif; color: #333;">
-      <h2 style="color: #1a56db;">GoExpressly — Shipment Update</h2>
-      <p>Hello {package.recipient_name},</p>
-      <p>Your shipment <strong>{package.tracking_id}</strong> has been updated:</p>
-      <table style="border-collapse: collapse; width: 100%; max-width: 500px;">
+    logo_url = f"{settings.site_url}/src/assets/logo.png"
+    track_url = f"{settings.site_url}/frontend/public/track.html?id={package.tracking_id}"
+    return f"""\
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#334155;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+
+        <!-- ▸ Branded header -->
         <tr>
-          <td style="padding: 8px; border: 1px solid #ddd;"><strong>Status</strong></td>
-          <td style="padding: 8px; border: 1px solid #ddd;">{event.status_label}</td>
+          <td style="background-color:#0EA5E9;padding:24px 32px;text-align:center;">
+            <img src="{logo_url}" alt="GoExpressly" width="180" style="display:block;margin:0 auto;max-width:180px;height:auto;" />
+          </td>
         </tr>
+
+        <!-- ▸ Body -->
         <tr>
-          <td style="padding: 8px; border: 1px solid #ddd;"><strong>Location</strong></td>
-          <td style="padding: 8px; border: 1px solid #ddd;">{event.location or 'N/A'}</td>
+          <td style="padding:32px;">
+            <h2 style="margin:0 0 8px;font-size:18px;font-weight:700;color:#0f172a;">Shipment Update</h2>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.5;">
+              Hello {package.recipient_name}, your shipment <strong style="color:#0f172a;">{package.tracking_id}</strong> has a new update.
+            </p>
+
+            <!-- Status table -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:24px;">
+              <tr style="background-color:#f8fafc;">
+                <td style="padding:12px 16px;font-size:13px;font-weight:600;color:#64748b;border-bottom:1px solid #e2e8f0;width:110px;">Status</td>
+                <td style="padding:12px 16px;font-size:14px;font-weight:600;color:#0EA5E9;border-bottom:1px solid #e2e8f0;">{event.status_label}</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;font-size:13px;font-weight:600;color:#64748b;border-bottom:1px solid #e2e8f0;width:110px;">Location</td>
+                <td style="padding:12px 16px;font-size:14px;color:#334155;border-bottom:1px solid #e2e8f0;">{event.location or 'N/A'}</td>
+              </tr>
+              <tr style="background-color:#f8fafc;">
+                <td style="padding:12px 16px;font-size:13px;font-weight:600;color:#64748b;width:110px;">Time</td>
+                <td style="padding:12px 16px;font-size:14px;color:#334155;">{event.timestamp.strftime('%Y-%m-%d %H:%M UTC')}</td>
+              </tr>
+            </table>
+
+            <!-- CTA button -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr><td align="center">
+                <a href="{track_url}" style="display:inline-block;background-color:#0EA5E9;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">
+                  Track {package.tracking_id}
+                </a>
+              </td></tr>
+            </table>
+          </td>
         </tr>
+
+        <!-- ▸ Footer -->
         <tr>
-          <td style="padding: 8px; border: 1px solid #ddd;"><strong>Time</strong></td>
-          <td style="padding: 8px; border: 1px solid #ddd;">{event.timestamp.strftime('%Y-%m-%d %H:%M UTC')}</td>
+          <td style="background-color:#f8fafc;padding:20px 32px;border-top:1px solid #e2e8f0;text-align:center;">
+            <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">This is an automated message from GoExpressly. Please do not reply.</p>
+            <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; 2026 GoExpressly. All rights reserved.</p>
+          </td>
         </tr>
+
       </table>
-      <p style="margin-top: 16px;">
-        Use your tracking ID <strong>{package.tracking_id}</strong> to check
-        the full history on our tracking portal.
-      </p>
-      <p style="color: #999; font-size: 12px; margin-top: 24px;">
-        This is an automated message. Please do not reply.
-      </p>
-    </body></html>
-    """
+    </td></tr>
+  </table>
+</body>
+</html>"""
 
 
 def _build_text_body(package: Package, event: TrackingEvent) -> str:

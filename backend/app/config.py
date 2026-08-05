@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     from_email: str = "noreply@goexpressly.com"
 
+    # Public site URL (used for email logo images, tracking links, etc.)
+    site_url: str = "https://goexpressly.com"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

@@ -59,6 +59,7 @@ class PackageListItem(BaseModel):
     tracking_id: str
     recipient_name: str
     recipient_email: str
+    destination: Optional[str]
     current_status: Optional[str]
     current_location: Optional[str]
     is_delivered: bool
