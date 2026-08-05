@@ -1,0 +1,20 @@
+# ── Local Development Override ────────────────────────────────────────────────
+# Docker Compose automatically merges this file on top of docker-compose.yml
+# when you run `docker compose up` locally. It is NEVER used in production.
+#
+# Usage:
+#   Local:      docker compose up           (uses both files)
+#   Production: docker compose -f docker-compose.yml up  (base file only)
+#
+# Add this file to .gitignore if it contains any secrets.
+
+services:
+  backend:
+    # Expose uvicorn directly so you can hit http://localhost:8000/docs locally
+    ports:
+      - "8000:8000"
+
+  db:
+    # Expose DB so you can inspect with pgAdmin / TablePlus / DBeaver
+    ports:
+      - "5432:5432"
