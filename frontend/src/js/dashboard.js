@@ -222,6 +222,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         dropdownId: 'create-citycollection-dropdown',
     });
 
+    // Initialise autocomplete for Create Package modal (Delivery City)
+    initAutocomplete({
+        inputId: 'create-deliverycity-input',
+        dropdownId: 'create-deliverycity-dropdown',
+    });
+
     // Initialise autocomplete for Add Event modal (Location)
     initAutocomplete({
         inputId: 'event-location-input',
@@ -317,6 +323,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('create-location-input').value = '';
         document.getElementById('create-destination-input').value = '';
         document.getElementById('create-citycollection-input').value = '';
+        document.getElementById('create-deliverycity-input').value = '';
         document.getElementById('create-lat').value = '';
         document.getElementById('create-lng').value = '';
         document.getElementById('create-geocode-status').textContent = '';

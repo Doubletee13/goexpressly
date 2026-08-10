@@ -285,8 +285,14 @@
                     <div
                         class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-semibold text-sm border-b border-brand-200/50 pb-1 mt-4">
                         Recipient / Dest Details</div>
-                    <div><label class="field-label">Delivery City</label><input name="delivery_city"
-                            class="form-input" /></div>
+                    <div>
+                        <label class="field-label">Delivery City</label>
+                        <div class="autocomplete-wrap">
+                            <input name="delivery_city" id="create-deliverycity-input" class="form-input"
+                                placeholder="e.g. London, UK" autocomplete="off" />
+                            <ul id="create-deliverycity-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                    </div>
                     <div><label class="field-label">Est. Delivery Date</label><input name="estimated_delivery_date"
                             type="datetime-local" class="form-input" /></div>
                     <div class="sm:col-span-2"><label class="field-label">Destination Address</label><textarea
