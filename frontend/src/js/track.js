@@ -342,11 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
             mapMarker = L.marker(pos, { icon }).addTo(mapInstance);
 
             const popStyle = getPopupStyle();
-            const locationHeader = displayName
+            const hasDisplayName = Boolean(displayName && displayName.trim());
+            const locationHeader = hasDisplayName
                 ? escHtml(displayName)
-                : 'Package Location';
+                : (formattedAddress ? escHtml(formattedAddress) : 'Package Location');
 
-            const addressHtml = formattedAddress
+            const addressHtml = (hasDisplayName && formattedAddress && formattedAddress !== displayName)
                 ? `<div style="font-size:12px;color:#94a3b8;margin-top:2px">${escHtml(formattedAddress)}</div>`
                 : '';
 

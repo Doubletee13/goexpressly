@@ -353,14 +353,20 @@
                     <label class="field-label">Location *</label>
                     <div class="autocomplete-wrap">
                         <input name="location" id="event-location-input" class="form-input"
-                            placeholder="e.g. New York, USA" required autocomplete="off" />
+                            placeholder="e.g. 2-50 N Boundary Rd, Queens, NY" required autocomplete="off" />
                         <ul id="event-location-dropdown" class="autocomplete-dropdown hidden"></ul>
                     </div>
                     <p id="event-geocode-status"
                         class="text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400"></p>
                     <input type="hidden" name="current_lat" id="event-lat" />
                     <input type="hidden" name="current_lng" id="event-lng" />
-                    <input type="hidden" name="display_name" id="event-display-name" />
+                </div>
+                <div>
+                    <label class="field-label">Facility / Display Name <span
+                            class="text-xs text-slate-400 font-normal">(Optional, e.g. USPS Customs
+                            Office)</span></label>
+                    <input name="display_name" id="event-display-name" class="form-input"
+                        placeholder="e.g. USPS International Mail Facility" />
                 </div>
                 <div><label class="field-label">Admin Notes (private)</label><textarea name="notes"
                         class="form-input resize-none" rows="2"
