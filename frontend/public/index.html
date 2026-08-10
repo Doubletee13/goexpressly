@@ -23,7 +23,7 @@
       position: absolute;
       inset: 0;
       background-size: cover;
-      background-position: center;
+      background-position: center center;
       transition: opacity 1.2s ease-in-out;
       opacity: 0;
     }
@@ -249,19 +249,19 @@
 
   <main>
     <!-- ── HERO SECTION WITH BACKGROUND SLIDESHOW ──────────────────── -->
-    <section class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
+    <section class="relative min-h-[600px] lg:min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
 
       <!-- Background image slides -->
       <div id="hero-bg" class="absolute inset-0 z-0">
         <div class="hero-bg-slide active" style="background-image:url('assets/hero-plane.png')"></div>
         <div class="hero-bg-slide" style="background-image:url('assets/hero-ship.png')"></div>
         <div class="hero-bg-slide" style="background-image:url('assets/hero-truck.png')"></div>
-        <!-- Dark overlay for readability -->
-        <div class="absolute inset-0 bg-slate-900/60 dark:bg-slate-900/75"></div>
+        <!-- Dark overlay for legibility -->
+        <div class="absolute inset-0 bg-slate-900/65 dark:bg-slate-950/75"></div>
       </div>
 
       <!-- Dot indicators -->
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         <button class="hero-dot active" data-slide="0" aria-label="Slide 1"></button>
         <button class="hero-dot" data-slide="1" aria-label="Slide 2"></button>
         <button class="hero-dot" data-slide="2" aria-label="Slide 3"></button>
@@ -280,7 +280,7 @@
             Your parcels.<br />
             <span class="text-brand-400">Always in sight.</span>
           </h1>
-          <p class="text-lg text-white/75 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
+          <p class="text-lg text-white/80 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
             GoExpressly gives you instant, real-time visibility into every step of your shipment's journey — from pickup
             to your door.
           </p>
@@ -288,11 +288,11 @@
           <!-- Inline tracking search -->
           <form id="hero-track-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto lg:mx-0">
             <input id="hero-tracking-input" type="text" placeholder="Enter tracking ID e.g. GX-A1B2C3D4E5"
-              class="form-input flex-1 font-mono placeholder:font-sans bg-white/10 border-white/30 text-white placeholder:text-white/50 backdrop-blur-md focus:bg-white/20"
+              class="form-input flex-1 font-mono placeholder:font-sans bg-white/15 border-white/30 text-white placeholder:text-white/60 backdrop-blur-md focus:bg-white/25"
               autocomplete="off" />
             <button type="submit" class="btn-primary shrink-0">Track</button>
           </form>
-          <p class="text-xs text-white/50 mt-3">No account required — just your tracking ID.</p>
+          <p class="text-xs text-white/60 mt-3">No account required — just your tracking ID.</p>
         </div>
 
         <!-- Hero Carousel (right side) -->
@@ -581,9 +581,9 @@
       <div class="section">
         <div class="text-center mb-14 reveal">
           <p class="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-3">Customer Stories</p>
-          <h2 class="heading-lg text-slate-800 dark:text-slate-50">Trusted by thousands worldwide</h2>
-          <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-lg mx-auto">Here's what our customers say about their
-            GoExpressly experience.</p>
+          <h2 class="heading-lg text-slate-800 dark:text-slate-50">Trusted by businesses worldwide</h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-lg mx-auto">Here's what our logistics partners say
+            about their GoExpressly experience.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Testimonial 1 -->
@@ -595,13 +595,12 @@
             <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm italic">"GoExpressly has completely
               transformed the way we manage our international shipments. The real-time tracking gives me peace of mind
               every single time."</p>
-            <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/20">
-              <div
-                class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                SM</div>
+            <div class="flex items-center gap-3.5 mt-auto pt-4 border-t border-white/20">
+              <img src="assets/avatar-1.png" alt="Sarah Miller"
+                class="w-11 h-11 rounded-full object-cover shrink-0 border-2 border-brand-500/30" />
               <div>
-                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">Sarah Mitchell</p>
-                <p class="text-xs text-slate-400">Operations Manager, TechImport Co.</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">Sarah Miller</p>
+                <p class="text-xs text-slate-400">VP of Logistics, Apex Retail Group</p>
               </div>
             </div>
           </div>
@@ -612,16 +611,16 @@
               <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
                 class="star">★</span><span class="star">★</span>
             </div>
-            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm italic">"The customs facility tracking
-              is unmatched. I can see exactly where my package is, down to the building level. No other courier does
-              this."</p>
-            <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/20">
-              <div
-                class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                JO</div>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm italic">"The building-level map
+              precision is unmatched. I can see exactly which customs facility building my package is in. No other
+              courier provides this level of detail."</p>
+            <div class="flex items-center gap-3.5 mt-auto pt-4 border-t border-white/20">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80"
+                alt="David Richardson"
+                class="w-11 h-11 rounded-full object-cover shrink-0 border-2 border-brand-500/30" />
               <div>
-                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">James Okonkwo</p>
-                <p class="text-xs text-slate-400">Supply Chain Director, Lagos Global</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">David Richardson</p>
+                <p class="text-xs text-slate-400">Supply Chain Lead, Horizon Trading</p>
               </div>
             </div>
           </div>
@@ -632,16 +631,15 @@
               <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
                 class="star">★</span><span class="star">★</span>
             </div>
-            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm italic">"The automatic email
-              notifications are a game changer. My clients love the transparency and I spend less time answering 'where
-              is my order?' calls."</p>
-            <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/20">
-              <div
-                class="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                AP</div>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm italic">"The automatic recipient email
+              alerts save us hours of work. Our clients love the transparency and I spend less time answering 'where is
+              my order?' inquiries."</p>
+            <div class="flex items-center gap-3.5 mt-auto pt-4 border-t border-white/20">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80"
+                alt="Emily Vance" class="w-11 h-11 rounded-full object-cover shrink-0 border-2 border-brand-500/30" />
               <div>
-                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">Anika Patel</p>
-                <p class="text-xs text-slate-400">E-commerce Founder, StyleShip</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">Emily Vance</p>
+                <p class="text-xs text-slate-400">Director of Operations, Vance Commerce</p>
               </div>
             </div>
           </div>
