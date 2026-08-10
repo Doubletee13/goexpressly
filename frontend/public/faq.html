@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoExpressly — Frequently Asked Questions (FAQ)</title>
+    <meta name="description"
+        content="Find answers to common questions about tracking packages, customs clearance, shipping times, and GoExpressly services." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="stylesheet" href="dist/css/main.min.css" />
+    <script>
+        (function () {
+            var t = localStorage.getItem('goexpressly-theme');
+            if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches))
+                document.documentElement.classList.add('dark');
+        })();
+    </script>
+    <style>
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 210px;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 158, 191, 0.18);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            padding: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(-6px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            z-index: 200;
+        }
+
+        .dark .nav-dropdown-menu {
+            background: rgba(15, 22, 35, 0.97);
+            border-color: rgba(59, 158, 191, 0.25);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu,
+        .nav-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .nav-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .dark .nav-dropdown-menu a {
+            color: #cbd5e1;
+        }
+
+        .nav-dropdown-menu a:hover {
+            background: rgba(59, 158, 191, 0.1);
+            color: #3B9EBF;
+        }
+
+        .nav-dropdown-menu a .menu-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 158, 191, 0.1);
+            border-radius: 8px;
+            flex-shrink: 0;
+            font-size: 15px;
+        }
+
+        /* FAQ Accordion Styling */
+        .faq-item {
+            transition: border-color 0.2s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            transition: max-height 0.4s ease-in-out;
+        }
+
+        .faq-chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Category Tab buttons */
+        .cat-tab {
+            padding: 8px 18px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .cat-tab.active {
+            background: #3B9EBF;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(59, 158, 191, 0.3);
+        }
+
+        .cat-tab:not(.active) {
+            background: rgba(255, 255, 255, 0.4);
+            color: #64748b;
+        }
+
+        .dark .cat-tab:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+        }
+
+        .cat-tab:not(.active):hover {
+            background: rgba(59, 158, 191, 0.15);
+            color: #3B9EBF;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- ── HEADER ───────────────────────────────────────────────────── -->
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass mt-3 px-5 py-3 flex items-center justify-between gap-4">
+                <!-- Logo -->
+                <a href="/index.html" class="flex items-center gap-3 shrink-0">
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <a href="/index.html#features"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Features</a>
+                    <!-- Services Dropdown -->
+                    <div class="nav-dropdown">
+                        <button
+                            class="flex items-center gap-1 hover:text-brand-500 dark:hover:text-brand-400 transition-colors focus:outline-none">
+                            Services
+                            <svg class="w-3.5 h-3.5 mt-0.5 opacity-60" fill="none" stroke="currentColor"
+                                stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="services.html#air"><span class="menu-icon">✈️</span>Air Freight</a>
+                            <a href="services.html#ocean"><span class="menu-icon">🚢</span>Ocean Freight</a>
+                            <a href="services.html#land"><span class="menu-icon">🚚</span>Land Cargo</a>
+                            <a href="services.html#warehouse"><span class="menu-icon">🏭</span>Warehousing</a>
+                            <a href="services.html#express"><span class="menu-icon">⚡</span>Express Courier</a>
+                        </div>
+                    </div>
+                    <a href="/index.html#how-it-works"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">How It Works</a>
+                    <a href="faq.html" class="text-brand-500 font-semibold">FAQ</a>
+                    <a href="contact.html"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Contact</a>
+                    <a href="track.html" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Track
+                        Package</a>
+                </nav>
+
+                <!-- Right actions -->
+                <div class="flex items-center gap-3">
+                    <button data-theme-toggle aria-label="Toggle theme"
+                        class="p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all">
+                        <svg data-icon="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                        <svg data-icon="moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+                    <a href="/login.html" class="hidden sm:inline-flex btn-ghost text-sm py-2 px-4">Admin</a>
+                    <a href="/track.html" class="hidden sm:inline-flex btn-primary text-sm py-2 px-5">Track Now</a>
+
+                    <!-- Mobile hamburger -->
+                    <button id="mobile-menu-btn"
+                        class="md:hidden p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/30 dark:hover:bg-white/10 transition-all"
+                        aria-label="Open menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu"
+                class="hidden glass mt-2 px-5 py-4 flex-col gap-1 text-sm font-medium text-slate-700 dark:text-slate-200 md:hidden">
+                <a href="/index.html#features" class="py-2 hover:text-brand-500 transition-colors">Features</a>
+                <div class="py-1">
+                    <p class="text-xs uppercase tracking-widest text-slate-400 mb-1 mt-1">Services</p>
+                    <a href="services.html#air"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">✈️ Air
+                        Freight</a>
+                    <a href="services.html#ocean"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🚢 Ocean
+                        Freight</a>
+                    <a href="services.html#land"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🚚 Land
+                        Cargo</a>
+                    <a href="services.html#warehouse"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🏭
+                        Warehousing</a>
+                    <a href="services.html#express"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">⚡ Express
+                        Courier</a>
+                </div>
+                <a href="/index.html#how-it-works" class="py-2 hover:text-brand-500 transition-colors">How It Works</a>
+                <a href="faq.html" class="py-2 text-brand-500 font-semibold">FAQ</a>
+                <a href="contact.html" class="py-2 hover:text-brand-500 transition-colors">Contact</a>
+                <a href="/track.html" class="py-2 hover:text-brand-500 transition-colors">Track Package</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-24">
+
+        <!-- ── PAGE HERO ────────────────────────────────────────────────── -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+            <div
+                class="inline-flex items-center gap-2 glass px-4 py-2 text-xs font-semibold text-brand-600 dark:text-brand-300 mb-4">
+                <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                Help Center & Support
+            </div>
+            <h1 class="heading-xl text-slate-800 dark:text-slate-50 mb-4">Frequently Asked Questions</h1>
+            <p class="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+                Got questions about tracking, shipping speeds, or customs updates? Find quick answers right here.
+            </p>
+        </section>
+
+        <!-- ── CATEGORY TABS ────────────────────────────────────────────── -->
+        <div class="max-w-4xl mx-auto px-4 mb-10 flex flex-wrap justify-center gap-2.5">
+            <button class="cat-tab active" data-cat="all">All Questions</button>
+            <button class="cat-tab" data-cat="tracking">Tracking & Status</button>
+            <button class="cat-tab" data-cat="shipping">Shipping & Delivery</button>
+            <button class="cat-tab" data-cat="customs">Customs & Clearance</button>
+            <button class="cat-tab" data-cat="account">General Support</button>
+        </div>
+
+        <!-- ── FAQ ACCORDION CONTAINER ───────────────────────────────────── -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 space-y-4" id="faq-list">
+
+            <!-- Q1 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="tracking">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">How do I track my package with
+                        GoExpressly?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        Simply visit our <a href="track.html" class="text-brand-500 font-semibold underline">Track
+                            Package page</a>, enter your unique tracking ID (e.g. <code>GX-A1B2C3D4E5</code>), and click
+                        "Track". You will instantly see your package's current status, high-precision map pin, and full
+                        milestone history.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="tracking">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">What format is a GoExpressly
+                        tracking ID?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        GoExpressly tracking numbers always begin with the prefix <code>GX-</code> followed by 10
+                        alphanumeric characters (for example, <code>GX-VSVMCTRXU8</code>). You can find this code in
+                        your booking confirmation email or receipt.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="customs">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">Why does my tracking status say
+                        "Customs Clearance"?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        "Customs Clearance" indicates your parcel has arrived at an international border facility (such
+                        as a USPS International Mail Facility) and is undergoing standard documentation inspection. Our
+                        map displays the exact facility name and coordinates so you know precisely where your package is
+                        held.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="tracking">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">How accurate is the live map
+                        pin location?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        Our maps operate at <strong>Zoom Level 16 (building-level precision)</strong> using Esri World
+                        Imagery. Administrators manually adjust pins directly onto physical buildings, so you see exact
+                        facility roofs rather than generic road intersections.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="account">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">Do I need an account to track
+                        my shipment?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        No! GoExpressly package tracking is completely open and free. Recipients and senders can enter
+                        any valid tracking ID directly on our tracking page without creating an account or logging in.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="shipping">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">Will I receive email alerts
+                        when my tracking status changes?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        Yes! If the sender provided your recipient email address during shipment creation, our backend
+                        system automatically sends clean HTML status updates to your inbox the instant a new milestone
+                        is logged.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="shipping">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">What shipping options does
+                        GoExpressly support?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        We support 5 core logistics verticals: <strong>Air Freight</strong> (24-48 hr express),
+                        <strong>Ocean Freight</strong> (container shipping), <strong>Land Cargo</strong> (interstate
+                        trucking), <strong>Warehousing</strong>, and <strong>Express Courier</strong>. Learn more on our
+                        <a href="services.html" class="text-brand-500 underline font-semibold">Services page</a>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="faq-item glass-lg rounded-2xl overflow-hidden reveal" data-category="account">
+                <button class="w-full px-6 py-5 flex items-center justify-between text-left gap-4 focus:outline-none">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-base">How can I contact customer
+                        support?</span>
+                    <svg class="faq-chevron w-5 h-5 text-brand-500 shrink-0" fill="none" stroke="currentColor"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer px-6">
+                    <p
+                        class="pb-6 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-4">
+                        Our support team is available 24/7 via email at <a href="mailto:support@goexpressly.com"
+                            class="text-brand-500 underline font-semibold">support@goexpressly.com</a> or by submitting
+                        a message on our <a href="contact.html" class="text-brand-500 underline font-semibold">Contact
+                            Us page</a>. Our headquarters are located in Irving, Texas.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── STILL HAVE QUESTIONS CTA ──────────────────────────────────── -->
+        <div class="max-w-2xl mx-auto px-4 mt-16 text-center reveal">
+            <div class="glass p-8 rounded-2xl">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2">Still have questions?</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Our dedicated support team in Irving, Texas
+                    is here to assist you 24/7.</p>
+                <a href="contact.html" class="btn-primary text-sm px-6 py-3">Contact Support Team</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- ── FOOTER ───────────────────────────────────────────────────── -->
+    <footer class="border-t border-white/20 dark:border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <a href="/index.html" class="flex items-center gap-3 mb-4">
+                        <img src="assets/logo-light.svg" alt="GoExpressly" class="h-9 w-auto opacity-80 dark:hidden" />
+                        <img src="assets/logo-dark.svg" alt="GoExpressly"
+                            class="h-9 w-auto opacity-80 hidden dark:block" />
+                    </a>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Fast, transparent courier
+                        tracking from pickup to delivery — worldwide.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Services</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="services.html#air" class="hover:text-brand-500 transition-colors">Air Freight</a>
+                        <a href="services.html#ocean" class="hover:text-brand-500 transition-colors">Ocean Freight</a>
+                        <a href="services.html#land" class="hover:text-brand-500 transition-colors">Land Cargo</a>
+                        <a href="services.html#warehouse" class="hover:text-brand-500 transition-colors">Warehousing</a>
+                        <a href="services.html#express" class="hover:text-brand-500 transition-colors">Express
+                            Courier</a>
+                    </nav>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Company</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="/index.html#features" class="hover:text-brand-500 transition-colors">Features</a>
+                        <a href="/index.html#how-it-works" class="hover:text-brand-500 transition-colors">How It
+                            Works</a>
+                        <a href="/index.html#testimonials"
+                            class="hover:text-brand-500 transition-colors">Testimonials</a>
+                    </nav>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Support</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="/track.html" class="hover:text-brand-500 transition-colors">Track Package</a>
+                        <a href="faq.html" class="hover:text-brand-500 transition-colors">FAQ</a>
+                        <a href="contact.html" class="hover:text-brand-500 transition-colors">Contact Us</a>
+                        <a href="/login.html" class="hover:text-brand-500 transition-colors">Admin Login</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-400 dark:text-slate-600">© 2026 GoExpressly. All rights reserved.</p>
+                <p class="text-xs text-slate-400">Irving, Texas, USA · <a href="mailto:support@goexpressly.com"
+                        class="hover:text-brand-500 transition-colors">support@goexpressly.com</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="dist/js/theme.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Accordion toggle
+            const items = document.querySelectorAll('.faq-item');
+            items.forEach(item => {
+                const btn = item.querySelector('button');
+                btn.addEventListener('click', () => {
+                    const isOpen = item.classList.contains('open');
+                    // close all
+                    items.forEach(i => i.classList.remove('open'));
+                    // toggle current
+                    if (!isOpen) item.classList.add('open');
+                });
+            });
+
+            // Category tab filtering
+            const tabs = document.querySelectorAll('.cat-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const cat = tab.dataset.cat;
+                    items.forEach(item => {
+                        if (cat === 'all' || item.dataset.category === cat) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Mobile menu
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('flex');
+                });
+                mobileMenu.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('flex');
+                    });
+                });
+            }
+
+            // Scroll-reveal
+            const revealEls = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            revealEls.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+
+</html>
