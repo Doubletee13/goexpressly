@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "npm run dev:copy && npx -y concurrently \"npx tailwindcss -i src/css/main.css -o public/dist/css/main.min.css --watch\" \"npx -y browser-sync start --server public --files 'public/**/*.html, public/dist/**/*.css, public/dist/**/*.js' --no-notify\"",
         "build:css": "npx tailwindcss -i src/css/main.css -o public/dist/css/main.min.css --minify",
-        "build:js": "npx terser src/js/theme.js -o public/dist/js/theme.min.js && npx terser src/js/carousel.js -o public/dist/js/carousel.min.js && npx terser src/js/api.js -o public/dist/js/api.min.js && npx terser src/js/track.js -o public/dist/js/track.min.js && npx terser src/js/auth.js -o public/dist/js/auth.min.js && npx terser src/js/dashboard.js -o public/dist/js/dashboard.min.js",
+        "build:js": "npx terser src/js/theme.js -o public/dist/js/theme.min.js && npx terser src/js/carousel.js -o public/dist/js/carousel.min.js && npx terser src/js/api.js -o public/dist/js/api.min.js && npx terser src/js/track.js -o public/dist/js/track.min.js && npx terser src/js/auth.js -o public/dist/js/auth.min.js && npx terser src/js/dashboard.js -o public/dist/js/dashboard.min.js && npx terser src/js/assistant.js -o public/dist/js/assistant.min.js",
         "build": "npm run build:css && npm run build:js",
         "dev:copy": "cp src/js/*.js public/dist/js/"
     },
