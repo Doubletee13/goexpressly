@@ -13,10 +13,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let mapInstance = null;
     let mapMarker = null;
     let mapTileLayer = null;
+    let mapMode = 'standard'; // 'standard' | 'satellite'
+
+    // Map mode toggle handlers
+    const btnMapStandard = document.getElementById('btn-map-standard');
+    const btnMapSatellite = document.getElementById('btn-map-satellite');
+
+    if (btnMapStandard && btnMapSatellite) {
+        btnMapStandard.addEventListener('click', () => setMapMode('standard'));
+        btnMapSatellite.addEventListener('click', () => setMapMode('satellite'));
+    }
+
+    function setMapMode(mode) {
+        if (mapMode === mode) return;
+        mapMode = mode;
+        if (btnMapStandard && btnMapSatellite) {
+            if (mode === 'satellite') {
+                btnMapSatellite.className = 'px-3 py-1 text-xs font-semibold rounded-lg transition-colors bg-brand-500 text-white shadow-sm';
+                btnMapStandard.className = 'px-3 py-1 text-xs font-semibold rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+            } else {
+                btnMapStandard.className = 'px-3 py-1 text-xs font-semibold rounded-lg transition-colors bg-brand-500 text-white shadow-sm';
+                btnMapSatellite.className = 'px-3 py-1 text-xs font-semibold rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+            }
+        }
+        updateMapTiles();
+    }
 
     // Theme change listener — update tiles if map already loaded
     const themeObserver = new MutationObserver(() => {
-        if (mapInstance && mapTileLayer) updateMapTiles();
+        if (mapInstance && mapTileLayer && mapMode === 'standard') updateMapTiles();
     });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
@@ -38,85 +63,74 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const data = await Api.trackPackage(trackingId);
             renderResults(data);
-            showState('results');
         } catch (err) {
-            errMsg.textContent = err.status === 404
-                ? `No package found with tracking ID "${trackingId}". Please double-check and try again.`
-                : (err.detail || 'A network error occurred. Please try again shortly.');
+            errMsg.textContent = err.message || 'Unable to load tracking details.';
             showState('error');
         }
     }
 
-    function showState(state) {
-        stateLoad.classList.add('hidden');
-        stateErr.classList.add('hidden');
-        stateRes.classList.add('hidden');
-        if (state === 'loading') stateLoad.classList.remove('hidden');
-        if (state === 'error') stateErr.classList.remove('hidden');
-        if (state === 'results') stateRes.classList.remove('hidden');
+    function showState(name) {
+        stateLoad.classList.toggle('hidden', name !== 'loading');
+        stateErr.classList.toggle('hidden', name !== 'error');
+        stateRes.classList.toggle('hidden', name !== 'results');
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────────
+    // ── Helper functions ───────────────────────────────────────────────────────
 
-    function setText(id, val, fallback = '—') {
+    function setText(id, val) {
         const el = document.getElementById(id);
-        if (el) el.textContent = val || fallback;
+        if (!el) return;
+        if (val) { el.textContent = val; el.parentElement.classList.remove('hidden'); }
+        else { el.parentElement.classList.add('hidden'); }
     }
 
-    function fmtDate(isoStr) {
-        if (!isoStr) return null;
-        try { return new Date(isoStr).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); }
-        catch { return isoStr; }
+    function fmtDate(d) {
+        if (!d) return '—';
+        return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
-    function fmtDateTime(isoStr) {
-        if (!isoStr) return null;
-        try {
-            return new Date(isoStr).toLocaleString('en-GB', {
-                year: 'numeric', month: 'short', day: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-        } catch { return isoStr; }
+    function fmtDateTime(d) {
+        if (!d) return '—';
+        const dt = new Date(d);
+        return `${dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} ${dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
     }
 
     function escHtml(str) {
-        return String(str || '').replace(/[&<>"']/g, m =>
-            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+        return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // ── Main render ────────────────────────────────────────────────────────────
+    // ── Render package details ─────────────────────────────────────────────────
 
     function renderResults(data) {
+        showState('results');
+
         setText('res-tracking-id', data.tracking_id);
+
+        // Status badge
+        const badge = document.getElementById('res-status-badge');
+        badge.textContent = data.current_status || 'Unknown';
+        badge.className = 'status-badge ' + getBadgeClass(data.current_status, data.is_delivered);
+
+        // Header info grid
         setText('res-recipient', data.recipient_name);
         setText('res-origin', data.origin);
         setText('res-destination', data.destination);
+        setText('res-est-delivery', fmtDate(data.estimated_delivery_date));
 
-        // Status bar + badge
-        const bar = document.getElementById('res-status-bar');
-        const badgeWrap = document.getElementById('res-badge-wrap');
-
-        if (data.is_delivered) {
-            bar.className = 'h-1.5 bg-gradient-to-r from-green-400 to-emerald-500 w-full';
-            badgeWrap.innerHTML = `<span class="badge badge-delivered">
-              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Delivered</span>`;
-        } else if (data.current_status) {
-            bar.className = 'h-1.5 bg-gradient-to-r from-brand-400 to-brand-600 w-full';
-            badgeWrap.innerHTML = `<span class="badge badge-active">
-              <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse-soft inline-block"></span>
-              In Transit</span>`;
-        } else {
-            bar.className = 'h-1.5 bg-gradient-to-r from-amber-400 to-orange-400 w-full';
-            badgeWrap.innerHTML = `<span class="badge badge-stopped">Awaiting Pickup</span>`;
-        }
-
+        // Progress stepper
         renderProgress(data);
 
+        // Status highlight banner
         const statusWrap = document.getElementById('res-current-status-wrap');
         if (data.current_status) {
-            setText('res-current-status', data.current_status);
-            setText('res-current-location', data.current_location, '');
+            document.getElementById('res-current-status-label').textContent = data.current_status;
+            const locEl = document.getElementById('res-current-location');
+            if (data.current_location) {
+                locEl.textContent = data.current_location;
+                locEl.classList.remove('hidden');
+            } else {
+                locEl.classList.add('hidden');
+            }
             statusWrap.classList.remove('hidden');
         } else {
             statusWrap.classList.add('hidden');
@@ -164,6 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
         else grid.classList.add('hidden');
 
         renderTimeline(data.history || []);
+    }
+
+    function getBadgeClass(status, isDelivered) {
+        if (isDelivered) return 'badge-delivered';
+        if (!status) return 'badge-pending';
+        const s = status.toLowerCase();
+        if (s.includes('hold') || s.includes('exception') || s.includes('delay')) return 'badge-exception';
+        if (s.includes('transit') || s.includes('out for')) return 'badge-intransit';
+        if (s.includes('delivered')) return 'badge-delivered';
+        return 'badge-pending';
     }
 
     // ── Progress stepper ───────────────────────────────────────────────────────
@@ -256,6 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getTileConfig() {
+        if (mapMode === 'satellite') {
+            return {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+            };
+        }
         if (isDarkMode()) {
             return {
                 url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -312,12 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     scrollWheelZoom: false,
                     attributionControl: true,
                 });
-                mapInstance.setView(pos, 12);
+                mapInstance.setView(pos, 16);
                 const cfg = getTileConfig();
                 mapTileLayer = L.tileLayer(cfg.url, { maxZoom: 19, attribution: cfg.attribution });
                 mapTileLayer.addTo(mapInstance);
             } else {
-                mapInstance.setView(pos, 12);
+                mapInstance.setView(pos, 16);
                 updateMapTiles();
             }
 

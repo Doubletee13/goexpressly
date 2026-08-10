@@ -361,6 +361,20 @@
                     <input type="hidden" name="current_lat" id="event-lat" />
                     <input type="hidden" name="current_lng" id="event-lng" />
                 </div>
+
+                <!-- ── Mini-map pin picker (shown once location is geocoded) ── -->
+                <div id="event-minimap-wrap" class="hidden sm:col-span-2">
+                    <label class="field-label flex items-center gap-2">
+                        📍 Fine-tune Pin Location
+                        <span class="text-xs text-slate-400 font-normal">Drag the pin onto the exact building</span>
+                    </label>
+                    <div id="event-minimap"
+                        class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm"
+                        style="height:220px;width:100%;"></div>
+                    <p class="text-xs text-slate-400 mt-1">Drag the marker to correct the pin position. Coordinates
+                        auto-update.</p>
+                </div>
+
                 <div>
                     <label class="field-label">Facility / Display Name <span
                             class="text-xs text-slate-400 font-normal">(Optional, e.g. USPS Customs

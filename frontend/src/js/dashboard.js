@@ -246,6 +246,82 @@ document.addEventListener('DOMContentLoaded', async () => {
         lngId: 'event-lng',
         displayNameId: 'event-display-name',
         statusId: 'event-geocode-status',
+        onSelect: (item) => showEventMinimap(parseFloat(item.lat), parseFloat(item.lon)),
+    });
+
+    // ── Event Mini-map Pin Picker ──────────────────────────────────────────────
+    let eventMiniMap = null;
+    let eventMiniMarker = null;
+
+    function showEventMinimap(lat, lng) {
+        const wrap = document.getElementById('event-minimap-wrap');
+        const container = document.getElementById('event-minimap');
+        if (!wrap || !container) return;
+
+        wrap.classList.remove('hidden');
+
+        const pos = [lat, lng];
+
+        if (!eventMiniMap) {
+            // Wait for Leaflet if not yet loaded
+            const tryInit = setInterval(() => {
+                if (typeof L === 'undefined') return;
+                clearInterval(tryInit);
+
+                eventMiniMap = L.map('event-minimap', {
+                    zoomControl: true,
+                    scrollWheelZoom: true,
+                    attributionControl: false,
+                });
+                eventMiniMap.setView(pos, 17);
+
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19,
+                    attribution: 'Esri World Imagery'
+                }).addTo(eventMiniMap);
+
+                const icon = L.divIcon({
+                    className: '',
+                    html: `<div style="width:28px;height:28px;background:#3B9EBF;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);cursor:grab"></div>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14],
+                });
+
+                eventMiniMarker = L.marker(pos, { icon, draggable: true }).addTo(eventMiniMap);
+
+                eventMiniMarker.on('dragend', () => {
+                    const { lat: newLat, lng: newLng } = eventMiniMarker.getLatLng();
+                    document.getElementById('event-lat').value = newLat.toFixed(6);
+                    document.getElementById('event-lng').value = newLng.toFixed(6);
+                    const status = document.getElementById('event-geocode-status');
+                    if (status) {
+                        status.textContent = `✓ Pin adjusted: ${newLat.toFixed(5)}, ${newLng.toFixed(5)}`;
+                        status.className = 'text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400';
+                    }
+                });
+
+                setTimeout(() => { if (eventMiniMap) eventMiniMap.invalidateSize(); }, 150);
+            }, 100);
+        } else {
+            eventMiniMap.setView(pos, 17);
+            if (eventMiniMarker) {
+                eventMiniMarker.setLatLng(pos);
+            }
+            setTimeout(() => { if (eventMiniMap) eventMiniMap.invalidateSize(); }, 150);
+        }
+    }
+
+    // Reset mini-map when event modal is closed
+    document.querySelectorAll('[data-modal="modal-event"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const wrap = document.getElementById('event-minimap-wrap');
+            if (wrap) wrap.classList.add('hidden');
+            if (eventMiniMap) {
+                eventMiniMap.remove();
+                eventMiniMap = null;
+                eventMiniMarker = null;
+            }
+        });
     });
 
     // ── Load packages ────────────────────────────────────────────────────────
