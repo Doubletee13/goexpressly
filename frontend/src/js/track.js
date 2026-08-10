@@ -64,7 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await Api.trackPackage(trackingId);
             renderResults(data);
         } catch (err) {
-            errMsg.textContent = err.message || 'Unable to load tracking details.';
+            if (err && err.status === 404) {
+                errMsg.textContent = `No package found with tracking ID "${trackingId}". Please check and try again.`;
+            } else if (err && err.message && !err.message.includes('null')) {
+                errMsg.textContent = err.message;
+            } else {
+                errMsg.textContent = 'A network error occurred. Please try again shortly.';
+            }
             showState('error');
         }
     }
@@ -106,16 +112,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setText('res-tracking-id', data.tracking_id);
 
-        // Status badge
-        const badge = document.getElementById('res-status-badge');
-        badge.textContent = data.current_status || 'Unknown';
-        badge.className = 'status-badge ' + getBadgeClass(data.current_status, data.is_delivered);
+        // Status badge — use the actual badge-wrap in the HTML
+        const badgeWrap = document.getElementById('res-badge-wrap');
+        if (badgeWrap) {
+            if (data.is_delivered) {
+                badgeWrap.innerHTML = `<span class="badge badge-delivered">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  Delivered</span>`;
+            } else if (data.current_status) {
+                badgeWrap.innerHTML = `<span class="badge badge-active">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse-soft inline-block"></span>
+                  ${escHtml(data.current_status)}</span>`;
+            } else {
+                badgeWrap.innerHTML = `<span class="badge badge-stopped">Awaiting Pickup</span>`;
+            }
+        }
+
+        // Status bar
+        const bar = document.getElementById('res-status-bar');
+        if (bar) {
+            bar.className = data.is_delivered
+                ? 'h-1.5 bg-gradient-to-r from-green-400 to-emerald-500 w-full'
+                : 'h-1.5 bg-gradient-to-r from-brand-400 to-brand-600 w-full';
+        }
 
         // Header info grid
         setText('res-recipient', data.recipient_name);
         setText('res-origin', data.origin);
         setText('res-destination', data.destination);
-        setText('res-est-delivery', fmtDate(data.estimated_delivery_date));
 
         // Progress stepper
         renderProgress(data);
@@ -123,17 +147,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Status highlight banner
         const statusWrap = document.getElementById('res-current-status-wrap');
         if (data.current_status) {
-            document.getElementById('res-current-status-label').textContent = data.current_status;
+            // correct ID: res-current-status
+            const statusEl = document.getElementById('res-current-status');
+            if (statusEl) statusEl.textContent = data.current_status;
             const locEl = document.getElementById('res-current-location');
-            if (data.current_location) {
-                locEl.textContent = data.current_location;
-                locEl.classList.remove('hidden');
-            } else {
-                locEl.classList.add('hidden');
+            if (locEl) {
+                if (data.current_location) {
+                    locEl.textContent = data.current_location;
+                    locEl.classList.remove('hidden');
+                } else {
+                    locEl.textContent = '';
+                    locEl.classList.add('hidden');
+                }
             }
-            statusWrap.classList.remove('hidden');
+            if (statusWrap) statusWrap.classList.remove('hidden');
         } else {
-            statusWrap.classList.add('hidden');
+            if (statusWrap) statusWrap.classList.add('hidden');
         }
 
         renderMap(data.current_lat, data.current_lng, data.display_name, data.current_location, data.current_status);
