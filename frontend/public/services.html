@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoExpressly — Global Logistics & Shipping Services</title>
+    <meta name="description"
+        content="Explore GoExpressly's freight and courier solutions: Air Freight, Ocean Freight, Land Cargo, Warehousing, and Express Courier delivery." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="stylesheet" href="dist/css/main.min.css" />
+    <script>
+        (function () {
+            var t = localStorage.getItem('goexpressly-theme');
+            if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches))
+                document.documentElement.classList.add('dark');
+        })();
+    </script>
+    <style>
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 210px;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 158, 191, 0.18);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            padding: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(-6px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            z-index: 200;
+        }
+
+        .dark .nav-dropdown-menu {
+            background: rgba(15, 22, 35, 0.97);
+            border-color: rgba(59, 158, 191, 0.25);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu,
+        .nav-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .nav-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .dark .nav-dropdown-menu a {
+            color: #cbd5e1;
+        }
+
+        .nav-dropdown-menu a:hover {
+            background: rgba(59, 158, 191, 0.1);
+            color: #3B9EBF;
+        }
+
+        .nav-dropdown-menu a .menu-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 158, 191, 0.1);
+            border-radius: 8px;
+            flex-shrink: 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- ── HEADER ───────────────────────────────────────────────────── -->
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass mt-3 px-5 py-3 flex items-center justify-between gap-4">
+                <!-- Logo -->
+                <a href="/index.html" class="flex items-center gap-3 shrink-0">
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <a href="/index.html#features"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Features</a>
+                    <!-- Services Dropdown -->
+                    <div class="nav-dropdown">
+                        <button class="flex items-center gap-1 text-brand-500 font-semibold focus:outline-none">
+                            Services
+                            <svg class="w-3.5 h-3.5 mt-0.5 opacity-60" fill="none" stroke="currentColor"
+                                stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="#air"><span class="menu-icon">✈️</span>Air Freight</a>
+                            <a href="#ocean"><span class="menu-icon">🚢</span>Ocean Freight</a>
+                            <a href="#land"><span class="menu-icon">🚚</span>Land Cargo</a>
+                            <a href="#warehouse"><span class="menu-icon">🏭</span>Warehousing</a>
+                            <a href="#express"><span class="menu-icon">⚡</span>Express Courier</a>
+                        </div>
+                    </div>
+                    <a href="/index.html#how-it-works"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">How It Works</a>
+                    <a href="faq.html" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">FAQ</a>
+                    <a href="contact.html"
+                        class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Contact</a>
+                    <a href="track.html" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Track
+                        Package</a>
+                </nav>
+
+                <!-- Right actions -->
+                <div class="flex items-center gap-3">
+                    <button data-theme-toggle aria-label="Toggle theme"
+                        class="p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all">
+                        <svg data-icon="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                        <svg data-icon="moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+                    <a href="/login.html" class="hidden sm:inline-flex btn-ghost text-sm py-2 px-4">Admin</a>
+                    <a href="/track.html" class="hidden sm:inline-flex btn-primary text-sm py-2 px-5">Track Now</a>
+
+                    <!-- Mobile hamburger -->
+                    <button id="mobile-menu-btn"
+                        class="md:hidden p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/30 dark:hover:bg-white/10 transition-all"
+                        aria-label="Open menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu"
+                class="hidden glass mt-2 px-5 py-4 flex-col gap-1 text-sm font-medium text-slate-700 dark:text-slate-200 md:hidden">
+                <a href="/index.html#features" class="py-2 hover:text-brand-500 transition-colors">Features</a>
+                <div class="py-1">
+                    <p class="text-xs uppercase tracking-widest text-slate-400 mb-1 mt-1">Services</p>
+                    <a href="#air" class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">✈️
+                        Air Freight</a>
+                    <a href="#ocean"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🚢 Ocean
+                        Freight</a>
+                    <a href="#land"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🚚 Land
+                        Cargo</a>
+                    <a href="#warehouse"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">🏭
+                        Warehousing</a>
+                    <a href="#express"
+                        class="py-1.5 pl-3 flex items-center gap-2 hover:text-brand-500 transition-colors">⚡ Express
+                        Courier</a>
+                </div>
+                <a href="/index.html#how-it-works" class="py-2 hover:text-brand-500 transition-colors">How It Works</a>
+                <a href="faq.html" class="py-2 hover:text-brand-500 transition-colors">FAQ</a>
+                <a href="contact.html" class="py-2 hover:text-brand-500 transition-colors">Contact</a>
+                <a href="/track.html" class="py-2 hover:text-brand-500 transition-colors">Track Package</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20">
+
+        <!-- ── PAGE HERO ────────────────────────────────────────────────── -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+            <div
+                class="inline-flex items-center gap-2 glass px-4 py-2 text-xs font-semibold text-brand-600 dark:text-brand-300 mb-4">
+                <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                Global Freight & Delivery Network
+            </div>
+            <h1 class="heading-xl text-slate-800 dark:text-slate-50 mb-6">Our Services</h1>
+            <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                From rapid air transit to high-volume ocean container transport and climate-controlled warehousing,
+                GoExpressly delivers reliability across air, sea, and land.
+            </p>
+        </section>
+
+        <!-- ── SERVICES LIST ────────────────────────────────────────────── -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+            <!-- 1. Air Freight -->
+            <section id="air" class="glass-lg p-8 sm:p-12 scroll-mt-32 reveal">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-500/15 flex items-center justify-center text-2xl">✈️
+                        </div>
+                        <h2 class="heading-md text-slate-800 dark:text-slate-50">Air Freight Services</h2>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            When time is critical, GoExpressly's global air cargo network guarantees rapid
+                            transportation across major international hubs with guaranteed 24 to 48 hour delivery
+                            windows.
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-2">✓ <span>Express flight booking & door-to-airport</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Temperature-controlled cargo pods</span></li>
+                            <li class="flex items-center gap-2">✓ <span>Priority customs clearance pre-filing</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Real-time flight tracking & milestone
+                                    alerts</span></li>
+                        </ul>
+                        <div class="pt-2 flex gap-4">
+                            <a href="track.html" class="btn-primary text-xs py-2.5 px-5">Track Air Cargo</a>
+                            <a href="contact.html" class="btn-ghost text-xs py-2.5 px-5">Request Quote</a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-white/20">
+                            <img src="assets/hero-plane.png" alt="Air Freight Cargo Plane"
+                                class="w-full h-64 object-cover hover:scale-105 transition-transform duration-500" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Ocean Freight -->
+            <section id="ocean" class="glass-lg p-8 sm:p-12 scroll-mt-32 reveal">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 order-2 lg:order-1">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-white/20">
+                            <img src="assets/hero-ship.png" alt="Ocean Freight Container Ship"
+                                class="w-full h-64 object-cover hover:scale-105 transition-transform duration-500" />
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 order-1 lg:order-2 space-y-5">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🚢
+                        </div>
+                        <h2 class="heading-md text-slate-800 dark:text-slate-50">Ocean Freight & Maritime</h2>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Cost-effective high-capacity ocean shipping for heavy industrial cargo, full container loads
+                            (FCL), and consolidated container shipments (LCL) worldwide.
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-2">✓ <span>FCL (Full Container Load) & LCL options</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Port-to-port and door-to-door logistics</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Marine insurance & bill of lading support</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Vessel location tracking & arrival
+                                    prediction</span></li>
+                        </ul>
+                        <div class="pt-2 flex gap-4">
+                            <a href="track.html" class="btn-primary text-xs py-2.5 px-5">Track Ocean Container</a>
+                            <a href="contact.html" class="btn-ghost text-xs py-2.5 px-5">Request Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Land Cargo -->
+            <section id="land" class="glass-lg p-8 sm:p-12 scroll-mt-32 reveal">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/15 flex items-center justify-center text-2xl">🚚
+                        </div>
+                        <h2 class="heading-md text-slate-800 dark:text-slate-50">Land Cargo & Trucking</h2>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Comprehensive road freight services connecting major regional distribution networks. Our
+                            fleet of modern heavy-duty vehicles ensures secure, on-time ground transport.
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-2">✓ <span>Full Truckload (FTL) & Less-Than-Truckload
+                                    (LTL)</span></li>
+                            <li class="flex items-center gap-2">✓ <span>GPS telemetry & driver telematics
+                                    tracking</span></li>
+                            <li class="flex items-center gap-2">✓ <span>Cross-border highway transit protocols</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Direct scheduled hub departures</span></li>
+                        </ul>
+                        <div class="pt-2 flex gap-4">
+                            <a href="track.html" class="btn-primary text-xs py-2.5 px-5">Track Ground Parcel</a>
+                            <a href="contact.html" class="btn-ghost text-xs py-2.5 px-5">Request Quote</a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-white/20">
+                            <img src="assets/hero-truck.png" alt="Land Cargo Truck"
+                                class="w-full h-64 object-cover hover:scale-105 transition-transform duration-500" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Warehousing -->
+            <section id="warehouse" class="glass-lg p-8 sm:p-12 scroll-mt-32 reveal">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 order-2 lg:order-1">
+                        <div
+                            class="glass p-8 flex flex-col items-center text-center justify-center h-64 bg-slate-900/10 dark:bg-slate-900/40">
+                            <span class="text-6xl mb-3">🏭</span>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-1">Irving TX Facility
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">State-of-the-art 150,000 sq ft customs
+                                bonded hub with 24/7 security surveillance.</p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 order-1 lg:order-2 space-y-5">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-2xl">
+                            🏭</div>
+                        <h2 class="heading-md text-slate-800 dark:text-slate-50">Warehousing & Fulfillment</h2>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Secure, climate-controlled warehousing equipped with automated inventory management,
+                            high-density racking, and full-service pick-and-pack fulfillment.
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-2">✓ <span>Customs bonded storage facilities</span></li>
+                            <li class="flex items-center gap-2">✓ <span>Climate-controlled storage zones</span></li>
+                            <li class="flex items-center gap-2">✓ <span>Automated barcode & RFID SKU tracking</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Same-day pick, pack & dispatch</span></li>
+                        </ul>
+                        <div class="pt-2 flex gap-4">
+                            <a href="contact.html" class="btn-primary text-xs py-2.5 px-5">Inquire Warehousing</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Express Courier -->
+            <section id="express" class="glass-lg p-8 sm:p-12 scroll-mt-32 reveal">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="w-12 h-12 rounded-2xl bg-violet-500/15 flex items-center justify-center text-2xl">⚡
+                        </div>
+                        <h2 class="heading-md text-slate-800 dark:text-slate-50">Express Door-to-Door Courier</h2>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Ultra-fast local and intercity package courier delivery with live building-level map pin
+                            tracking and instant recipient notification.
+                        </p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-2">✓ <span>Same-day & next-day delivery options</span></li>
+                            <li class="flex items-center gap-2">✓ <span>Building-level Leaflet map pin precision</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Digital signature proof of delivery (POD)</span>
+                            </li>
+                            <li class="flex items-center gap-2">✓ <span>Automated recipient status emails</span></li>
+                        </ul>
+                        <div class="pt-2 flex gap-4">
+                            <a href="track.html" class="btn-primary text-xs py-2.5 px-5">Track Express Parcel</a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <div
+                            class="glass p-8 flex flex-col items-center text-center justify-center h-64 bg-slate-900/10 dark:bg-slate-900/40">
+                            <span class="text-6xl mb-3">📍</span>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-1">Zero-Cost Precision
+                                Pin</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Powered by high-precision Leaflet &
+                                Esri World Imagery maps.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ── FOOTER ───────────────────────────────────────────────────── -->
+    <footer class="border-t border-white/20 dark:border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <a href="/index.html" class="flex items-center gap-3 mb-4">
+                        <img src="assets/logo-light.svg" alt="GoExpressly" class="h-9 w-auto opacity-80 dark:hidden" />
+                        <img src="assets/logo-dark.svg" alt="GoExpressly"
+                            class="h-9 w-auto opacity-80 hidden dark:block" />
+                    </a>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Fast, transparent courier
+                        tracking from pickup to delivery — worldwide.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Services</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="#air" class="hover:text-brand-500 transition-colors">Air Freight</a>
+                        <a href="#ocean" class="hover:text-brand-500 transition-colors">Ocean Freight</a>
+                        <a href="#land" class="hover:text-brand-500 transition-colors">Land Cargo</a>
+                        <a href="#warehouse" class="hover:text-brand-500 transition-colors">Warehousing</a>
+                        <a href="#express" class="hover:text-brand-500 transition-colors">Express Courier</a>
+                    </nav>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Company</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="/index.html#features" class="hover:text-brand-500 transition-colors">Features</a>
+                        <a href="/index.html#how-it-works" class="hover:text-brand-500 transition-colors">How It
+                            Works</a>
+                        <a href="/index.html#testimonials"
+                            class="hover:text-brand-500 transition-colors">Testimonials</a>
+                    </nav>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm mb-4">Support</p>
+                    <nav class="flex flex-col gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                        <a href="/track.html" class="hover:text-brand-500 transition-colors">Track Package</a>
+                        <a href="faq.html" class="hover:text-brand-500 transition-colors">FAQ</a>
+                        <a href="contact.html" class="hover:text-brand-500 transition-colors">Contact Us</a>
+                        <a href="/login.html" class="hover:text-brand-500 transition-colors">Admin Login</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-400 dark:text-slate-600">© 2026 GoExpressly. All rights reserved.</p>
+                <p class="text-xs text-slate-400">Irving, Texas, USA · <a href="mailto:support@goexpressly.com"
+                        class="hover:text-brand-500 transition-colors">support@goexpressly.com</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="dist/js/theme.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('flex');
+                });
+                mobileMenu.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('flex');
+                    });
+                });
+            }
+
+            // Scroll-reveal
+            const revealEls = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            revealEls.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+
+</html>
