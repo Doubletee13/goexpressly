@@ -13,6 +13,7 @@ class EventCreate(BaseModel):
     """Fields required when adding a new tracking event."""
     status_label: str
     location: Optional[str] = None
+    display_name: Optional[str] = None
     notes: Optional[str] = None  # Internal admin notes; not shown publicly
     
     # Optional coordinate updates to move the Google Maps pin
@@ -26,6 +27,7 @@ class EventOut(BaseModel):
     package_id: uuid.UUID
     status_label: str
     location: Optional[str]
+    display_name: Optional[str] = None
     timestamp: datetime
 
     model_config = {"from_attributes": True}
@@ -50,6 +52,7 @@ class PublicTrackingResponse(BaseModel):
     destination: Optional[str]
     current_status: Optional[str]
     current_location: Optional[str]
+    display_name: Optional[str] = None
     is_delivered: bool
 
     # Sender / Origin

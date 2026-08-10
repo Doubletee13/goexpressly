@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusWrap.classList.add('hidden');
         }
 
-        renderMap(data.current_lat, data.current_lng);
+        renderMap(data.current_lat, data.current_lng, data.display_name, data.current_location, data.current_status);
 
         // Sender section
         const senderSection = document.getElementById('sender-section');
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : 'background:rgba(255,255,255,0.95);color:#1e293b;border:1px solid rgba(59,158,191,0.35);border-radius:12px;';
     }
 
-    function renderMap(lat, lng) {
+    function renderMap(lat, lng, displayName, formattedAddress, statusLabel) {
         const section = document.getElementById('map-section');
         const noCoords = document.getElementById('map-no-coords');
         const mapCanvas = document.getElementById('map-canvas');
@@ -312,12 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     scrollWheelZoom: false,
                     attributionControl: true,
                 });
-                mapInstance.setView(pos, 10);
+                mapInstance.setView(pos, 12);
                 const cfg = getTileConfig();
                 mapTileLayer = L.tileLayer(cfg.url, { maxZoom: 19, attribution: cfg.attribution });
                 mapTileLayer.addTo(mapInstance);
             } else {
-                mapInstance.setView(pos, 10);
+                mapInstance.setView(pos, 12);
                 updateMapTiles();
             }
 
@@ -342,17 +342,32 @@ document.addEventListener('DOMContentLoaded', () => {
             mapMarker = L.marker(pos, { icon }).addTo(mapInstance);
 
             const popStyle = getPopupStyle();
+            const locationHeader = displayName
+                ? escHtml(displayName)
+                : 'Package Location';
+
+            const addressHtml = formattedAddress
+                ? `<div style="font-size:12px;color:#94a3b8;margin-top:2px">${escHtml(formattedAddress)}</div>`
+                : '';
+
+            const statusHtml = statusLabel
+                ? `<div style="font-size:11px;font-weight:700;color:#3B9EBF;margin-top:4px">Status: ${escHtml(statusLabel)}</div>`
+                : '';
+
             mapMarker.bindPopup(
-                `<div style="${popStyle} padding:10px 14px; box-shadow:0 6px 24px rgba(0,0,0,0.2); line-height:1.6">
-                   <p style="font-weight:700;font-size:13px;margin:0 0 4px">📦 Package Location</p>
-                   <p style="font-size:12px;color:#94a3b8;margin:0">${parseFloat(lat).toFixed(4)}°, ${parseFloat(lng).toFixed(4)}°</p>
+                `<div style="${popStyle} padding:10px 14px; box-shadow:0 6px 24px rgba(0,0,0,0.2); line-height:1.4">
+                   <div style="font-size:13px;font-weight:700">📦 ${locationHeader}</div>
+                   ${addressHtml}
+                   ${statusHtml}
                  </div>`,
                 { closeButton: false, className: 'pkg-popup' }
             ).openPopup();
 
-            // Coords in footer
+            // Footer info
             const coordEl = document.getElementById('map-coords');
-            if (coordEl) coordEl.textContent = `${parseFloat(lat).toFixed(5)}, ${parseFloat(lng).toFixed(5)}`;
+            if (coordEl) {
+                coordEl.textContent = displayName || formattedAddress || 'Live Geolocation Active';
+            }
         }, 150);
     }
 });

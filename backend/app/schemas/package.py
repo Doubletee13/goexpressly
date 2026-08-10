@@ -36,6 +36,7 @@ class PackageCreate(BaseModel):
     estimated_delivery_date: Optional[datetime] = None
 
     # Geolocation
+    display_name: Optional[str] = None
     current_lat: Optional[float] = None
     current_lng: Optional[float] = None
 
@@ -66,6 +67,7 @@ class PackageUpdate(BaseModel):
     estimated_delivery_date: Optional[datetime] = None
 
     # Geolocation
+    display_name: Optional[str] = None
     current_lat: Optional[float] = None
     current_lng: Optional[float] = None
 
@@ -84,6 +86,7 @@ class PackageOut(BaseModel):
     description: Optional[str]
     current_status: Optional[str]
     current_location: Optional[str]
+    display_name: Optional[str] = None
     is_delivered: bool
 
     # Sender / Origin
@@ -102,6 +105,7 @@ class PackageOut(BaseModel):
     estimated_delivery_date: Optional[datetime]
 
     # Geolocation
+    display_name: Optional[str] = None
     current_lat: Optional[float]
     current_lng: Optional[float]
 

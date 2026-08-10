@@ -48,6 +48,7 @@ def track_package(
         destination=package.destination,
         current_status=package.current_status,
         current_location=package.current_location,
+        display_name=package.display_name,
         is_delivered=package.is_delivered,
         # Sender / Origin
         sender_name=package.sender_name,

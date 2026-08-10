@@ -29,6 +29,7 @@ class TrackingEvent(Base):
     # Free-text status — no fixed enum; admin writes whatever is accurate
     status_label: Mapped[str] = mapped_column(Text, nullable=False)
     location: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    display_name: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Internal only
 
     # The authoritative timestamp for this milestone in the journey

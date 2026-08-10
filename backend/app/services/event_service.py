@@ -31,6 +31,7 @@ def create_event(
         package_id=package.id,
         status_label=data.status_label,
         location=data.location,
+        display_name=data.display_name,
         notes=data.notes,
         created_by=admin_id,
     )
@@ -40,6 +41,8 @@ def create_event(
     package.current_status = data.status_label
     if data.location:
         package.current_location = data.location
+    if data.display_name:
+        package.display_name = data.display_name
         
     if data.current_lat is not None:
         package.current_lat = data.current_lat

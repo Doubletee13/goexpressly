@@ -81,11 +81,12 @@ document.addEventListener('DOMContentLoaded', async () => {
      *   statusId   - id of the status <p> element
      *   onSelect   - optional callback called with the chosen Nominatim result
      */
-    function initAutocomplete({ inputId, dropdownId, latId, lngId, statusId, onSelect }) {
+    function initAutocomplete({ inputId, dropdownId, latId, lngId, displayNameId, statusId, onSelect }) {
         const input = document.getElementById(inputId);
         const dropdown = document.getElementById(dropdownId);
         const latEl = document.getElementById(latId);
         const lngEl = document.getElementById(lngId);
+        const displayNameEl = document.getElementById(displayNameId);
         const statusEl = document.getElementById(statusId);
         let timer = null;
         let activeIndex = -1;
@@ -99,6 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const val = input.value.trim();
             if (latEl) latEl.value = '';
             if (lngEl) lngEl.value = '';
+            if (displayNameEl) displayNameEl.value = '';
             if (val.length < 3) { hideDropdown(); return; }
             if (statusEl) {
                 statusEl.textContent = '';
@@ -179,10 +181,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         function selectResult(item) {
-            const short = item.display_name.split(',').slice(0, 3).join(', ');
+            const parts = item.display_name.split(',');
+            const short = parts.slice(0, 3).join(', ');
+            const poiName = item.name ||
+                (item.address && (item.address.amenity || item.address.building || item.address.office || item.address.facility)) ||
+                parts[0].trim();
+
             input.value = short;
             if (latEl) latEl.value = parseFloat(item.lat).toFixed(6);
             if (lngEl) lngEl.value = parseFloat(item.lon).toFixed(6);
+            if (displayNameEl) displayNameEl.value = poiName;
+
             if (statusEl) {
                 statusEl.textContent = `✓ Located: ${short}`;
                 statusEl.className = 'text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400';
@@ -207,6 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         dropdownId: 'create-location-dropdown',
         latId: 'create-lat',
         lngId: 'create-lng',
+        displayNameId: 'create-display-name',
         statusId: 'create-geocode-status',
     });
 
@@ -234,6 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         dropdownId: 'event-location-dropdown',
         latId: 'event-lat',
         lngId: 'event-lng',
+        displayNameId: 'event-display-name',
         statusId: 'event-geocode-status',
     });
 

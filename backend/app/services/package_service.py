@@ -49,6 +49,7 @@ def create_package(
         estimated_delivery_date=data.estimated_delivery_date,
 
         # Geolocation fields
+        display_name=data.display_name,
         current_lat=data.current_lat,
         current_lng=data.current_lng,
     )

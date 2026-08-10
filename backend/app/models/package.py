@@ -54,6 +54,7 @@ class Package(Base):
     # Denormalised latest status (updated each time a tracking event is added)
     current_status: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     current_location: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    display_name: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Geolocation for map display
     current_lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
