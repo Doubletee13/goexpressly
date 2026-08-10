@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -36,9 +36,28 @@ class Package(Base):
     destination: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
+    # Sender / Origin details
+    sender_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    sender_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    sender_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    city_collection: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    shipping_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    shipping_quantity: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    weight_lbs: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    carrier: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+
+    # Recipient / Destination details
+    delivery_city: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    destination_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    estimated_delivery_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
     # Denormalised latest status (updated each time a tracking event is added)
     current_status: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     current_location: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Geolocation for map display
+    current_lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    current_lng: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     is_delivered: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     # Soft-delete flag (keeps the record; excludes from normal queries)

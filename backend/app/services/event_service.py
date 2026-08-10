@@ -40,6 +40,11 @@ def create_event(
     package.current_status = data.status_label
     if data.location:
         package.current_location = data.location
+        
+    if data.current_lat is not None:
+        package.current_lat = data.current_lat
+    if data.current_lng is not None:
+        package.current_lng = data.current_lng
 
     # Mark as delivered if the status label hints at final delivery
     if _is_delivered_status(data.status_label):

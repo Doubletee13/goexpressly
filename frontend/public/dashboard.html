@@ -5,8 +5,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard — GoExpressly Admin</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="/dist/css/main.min.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="dist/css/main.min.css" />
+    <style>
+        /* Autocomplete dropdown */
+        .autocomplete-wrap {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.875rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            max-height: 220px;
+            overflow-y: auto;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dark .autocomplete-dropdown {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+    </style>
     <script>(function () { var t = localStorage.getItem('goexpressly-theme'); if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })();</script>
 </head>
 
@@ -19,8 +48,8 @@
             <div class="glass h-full m-3 rounded-2xl p-5 flex flex-col gap-6 overflow-y-auto">
                 <!-- Logo -->
                 <a href="/index.html" class="block">
-                    <img src="/src/assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
-                    <img src="/src/assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
                 </a>
 
                 <!-- Nav -->
@@ -89,8 +118,8 @@
                     </svg>
                 </button>
                 <a href="/index.html" class="block">
-                    <img src="/src/assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
-                    <img src="/src/assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
                 </a>
                 <div class="w-9"></div>
             </div>
@@ -183,7 +212,8 @@
 
     <!-- Create Package Modal -->
     <div id="modal-create" class="modal-overlay hidden">
-        <div class="glass-lg w-full max-w-lg p-7 space-y-4 animate-slide-up">
+        <div
+            class="glass-lg w-full max-w-lg p-5 sm:p-7 space-y-4 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
             <div class="flex items-center justify-between mb-1">
                 <h2 class="heading-sm text-slate-800 dark:text-slate-100">New Package</h2>
                 <button
@@ -197,17 +227,72 @@
             </div>
             <form id="form-create" class="space-y-4">
                 <div class="grid sm:grid-cols-2 gap-3">
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-semibold text-sm border-b border-brand-200/50 pb-1 mt-2">
+                        Core Info</div>
                     <div><label class="field-label">Recipient Name *</label><input name="recipient_name"
                             class="form-input" required /></div>
                     <div><label class="field-label">Recipient Email *</label><input name="recipient_email" type="email"
                             class="form-input" required /></div>
                     <div><label class="field-label">Recipient Phone</label><input name="recipient_phone"
                             class="form-input" /></div>
-                    <div><label class="field-label">Weight (kg)</label><input name="weight_kg" type="number" step="0.01"
-                            class="form-input" /></div>
-                    <div><label class="field-label">Origin</label><input name="origin" class="form-input" /></div>
-                    <div><label class="field-label">Destination</label><input name="destination" class="form-input" />
+                    <div><label class="field-label">Weight (lbs)</label><input name="weight_lbs" type="number"
+                            step="0.01" class="form-input" /></div>
+                    <div>
+                        <label class="field-label">Origin *</label>
+                        <div class="autocomplete-wrap">
+                            <input name="origin" id="create-location-input" class="form-input"
+                                placeholder="e.g. Paris, France" required autocomplete="off" />
+                            <ul id="create-location-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                        <p id="create-geocode-status"
+                            class="text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400"></p>
+                        <input type="hidden" name="current_lat" id="create-lat" />
+                        <input type="hidden" name="current_lng" id="create-lng" />
                     </div>
+                    <div>
+                        <label class="field-label">Destination</label>
+                        <div class="autocomplete-wrap">
+                            <input name="destination" id="create-destination-input" class="form-input"
+                                placeholder="e.g. London, UK" autocomplete="off" />
+                            <ul id="create-destination-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                    </div>
+
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-semibold text-sm border-b border-brand-200/50 pb-1 mt-4">
+                        Sender / Origin Details</div>
+                    <div><label class="field-label">Sender Name</label><input name="sender_name" class="form-input" />
+                    </div>
+                    <div><label class="field-label">Sender Phone</label><input name="sender_phone" class="form-input" />
+                    </div>
+                    <div>
+                        <label class="field-label">City Collection</label>
+                        <div class="autocomplete-wrap">
+                            <input name="city_collection" id="create-citycollection-input" class="form-input"
+                                placeholder="e.g. Berlin, DE" autocomplete="off" />
+                            <ul id="create-citycollection-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                    </div>
+                    <div><label class="field-label">Shipping Date</label><input name="shipping_date"
+                            type="datetime-local" class="form-input" /></div>
+                    <div><label class="field-label">Shipping Qty</label><input name="shipping_quantity" type="number"
+                            class="form-input" /></div>
+                    <div><label class="field-label">Carrier</label><input name="carrier" class="form-input" /></div>
+                    <div class="sm:col-span-2"><label class="field-label">Sender Address</label><textarea
+                            name="sender_address" class="form-input resize-none" rows="2"></textarea></div>
+
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-semibold text-sm border-b border-brand-200/50 pb-1 mt-4">
+                        Recipient / Dest Details</div>
+                    <div><label class="field-label">Delivery City</label><input name="delivery_city"
+                            class="form-input" /></div>
+                    <div><label class="field-label">Est. Delivery Date</label><input name="estimated_delivery_date"
+                            type="datetime-local" class="form-input" /></div>
+                    <div class="sm:col-span-2"><label class="field-label">Destination Address</label><textarea
+                            name="destination_address" class="form-input resize-none" rows="2"></textarea></div>
+
+
                 </div>
                 <div><label class="field-label">Description</label><input name="description" class="form-input"
                         placeholder="Brief package description" /></div>
@@ -222,7 +307,8 @@
 
     <!-- Add Event Modal -->
     <div id="modal-event" class="modal-overlay hidden">
-        <div class="glass-lg w-full max-w-md p-7 space-y-4 animate-slide-up">
+        <div
+            class="glass-lg w-full max-w-md p-5 sm:p-7 space-y-4 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
             <div class="flex items-center justify-between mb-1">
                 <h2 class="heading-sm text-slate-800 dark:text-slate-100">Add Tracking Event</h2>
                 <button
@@ -234,13 +320,40 @@
                     </svg>
                 </button>
             </div>
-            <p class="text-xs text-slate-400">For package: <span id="event-pkg-id" class="tracking-chip"></span></p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">For package: <span id="event-pkg-id"
+                    class="tracking-chip"></span></p>
             <form id="form-event" class="space-y-4">
                 <input type="hidden" id="event-pkg-uuid" />
-                <div><label class="field-label">Status Label *</label><input name="status_label" class="form-input"
-                        placeholder="e.g. In Transit" required /></div>
-                <div><label class="field-label">Location</label><input name="location" class="form-input"
-                        placeholder="e.g. New York Sorting Hub" /></div>
+                <div><label class="field-label">Status Label *</label>
+                    <select name="status_label" class="form-select" required>
+                        <option value="" disabled selected>Select a status…</option>
+                        <option value="Order Placed">Order Placed</option>
+                        <option value="Picked Up">Picked Up</option>
+                        <option value="Processing at Facility">Processing at Facility</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Arrived at Hub">Arrived at Hub</option>
+                        <option value="Departed Hub">Departed Hub</option>
+                        <option value="Customs Clearance">Customs Clearance</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivery Attempted">Delivery Attempted</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Exception">Exception</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Returned to Sender">Returned to Sender</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Location *</label>
+                    <div class="autocomplete-wrap">
+                        <input name="location" id="event-location-input" class="form-input"
+                            placeholder="e.g. New York, USA" required autocomplete="off" />
+                        <ul id="event-location-dropdown" class="autocomplete-dropdown hidden"></ul>
+                    </div>
+                    <p id="event-geocode-status"
+                        class="text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400"></p>
+                    <input type="hidden" name="current_lat" id="event-lat" />
+                    <input type="hidden" name="current_lng" id="event-lng" />
+                </div>
                 <div><label class="field-label">Admin Notes (private)</label><textarea name="notes"
                         class="form-input resize-none" rows="2"
                         placeholder="Internal note not visible to recipient"></textarea></div>
@@ -260,7 +373,8 @@
 
     <!-- Delete Confirm Modal -->
     <div id="modal-delete" class="modal-overlay hidden">
-        <div class="glass-lg w-full max-w-sm p-7 text-center space-y-5 animate-slide-up">
+        <div
+            class="glass-lg w-full max-w-sm p-5 sm:p-7 text-center space-y-5 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
             <div class="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto">
                 <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24">
@@ -282,9 +396,9 @@
     </div>
 
 
-    <script src="/dist/js/theme.min.js" defer></script>
-    <script src="/dist/js/api.min.js" defer></script>
-    <script src="/dist/js/dashboard.min.js" defer></script>
+    <script src="dist/js/theme.min.js" defer></script>
+    <script src="dist/js/api.min.js" defer></script>
+    <script src="dist/js/dashboard.min.js" defer></script>
 </body>
 
 </html>

@@ -49,5 +49,21 @@ def track_package(
         current_status=package.current_status,
         current_location=package.current_location,
         is_delivered=package.is_delivered,
+        # Sender / Origin
+        sender_name=package.sender_name,
+        sender_phone=package.sender_phone,
+        sender_address=package.sender_address,
+        city_collection=package.city_collection,
+        shipping_date=package.shipping_date,
+        shipping_quantity=package.shipping_quantity,
+        weight_lbs=package.weight_lbs,
+        carrier=package.carrier,
+        # Recipient / Destination
+        delivery_city=package.delivery_city,
+        destination_address=package.destination_address,
+        estimated_delivery_date=package.estimated_delivery_date,
+        # Geolocation
+        current_lat=package.current_lat,
+        current_lng=package.current_lng,
         history=[EventOut.model_validate(e) for e in events],
     )

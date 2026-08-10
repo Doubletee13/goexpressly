@@ -106,6 +106,44 @@
     backdrop-filter: blur(8px);
   }
 
+  /* Date/Time input specific styling (Facebook/Modern style) */
+  input[type="datetime-local"].form-input {
+    @apply cursor-pointer relative pr-10;
+  }
+
+  /* Style calendar picker indicator to use custom themed icon */
+  input[type="datetime-local"].form-input::-webkit-calendar-picker-indicator {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B9EBF'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3e%3c/svg%3e");
+    @apply opacity-80 hover:opacity-100 transition-opacity cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-contain bg-no-repeat bg-center;
+  }
+
+  .dark input[type="datetime-local"].form-input::-webkit-calendar-picker-indicator {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233AADD4'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3e%3c/svg%3e");
+  }
+
+  /* Form select (dropdown) */
+  .form-select {
+    @apply form-input appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 1rem center;
+    background-size: 1.25em 1.25em;
+    background-repeat: no-repeat;
+    padding-right: 2.5rem;
+  }
+
+  .dark .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394A3B8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  /* Style options so they match the theme and aren't pure white in dark mode on macOS */
+  .form-select option {
+    @apply bg-white text-slate-800 text-sm font-medium;
+  }
+
+  .dark .form-select option {
+    @apply bg-slate-800 text-slate-100;
+  }
+
   /* Status badge */
   .badge {
     @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
@@ -188,6 +226,39 @@
   .field-label {
     @apply block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5;
   }
+
+  /* ── Tracking detail panels (Sender / Recipient) ── */
+
+  /* Coloured header bar at the top of a detail panel */
+  .info-panel-header {
+    @apply px-6 py-3 text-sm font-bold tracking-widest uppercase text-white;
+    background: linear-gradient(90deg, #3B9EBF 0%, #2A7FA0 100%);
+  }
+
+  /* Two-column grid for field pairs */
+  .info-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5;
+  }
+
+  /* Individual field: label + value */
+  .info-field {
+    @apply flex flex-col gap-1 border-b border-slate-200/60 dark:border-white/8 pb-4;
+  }
+
+  .info-field label {
+    @apply text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wide;
+  }
+
+  .info-field span {
+    @apply text-sm font-semibold text-slate-700 dark:text-slate-200;
+  }
+}
+
+/* Modal scroll constraint (child selector not allowed inside @layer in Tailwind v3) */
+.modal-overlay>div {
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
 }
 
 /* ── Carousel Transitions ─────────────────────────────────────────────── */
@@ -202,5 +273,25 @@
 
   .carousel-slide.inactive {
     @apply opacity-0 z-0;
+  }
+
+  /* Blinking dot indicator for the live map header */
+  .map-blink {
+    animation: mapBlink 1s ease-in-out infinite;
+  }
+}
+
+/* mapBlink must live outside @layer (Tailwind restriction on @keyframes in layers) */
+@keyframes mapBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.2;
+    transform: scale(0.8);
   }
 }

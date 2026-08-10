@@ -20,6 +20,25 @@ class PackageCreate(BaseModel):
     destination: Optional[str] = None
     description: Optional[str] = None
 
+    # Sender / Origin
+    sender_name: Optional[str] = None
+    sender_phone: Optional[str] = None
+    sender_address: Optional[str] = None
+    city_collection: Optional[str] = None
+    shipping_date: Optional[datetime] = None
+    shipping_quantity: Optional[int] = None
+    weight_lbs: Optional[float] = None
+    carrier: Optional[str] = None
+
+    # Recipient / Destination
+    delivery_city: Optional[str] = None
+    destination_address: Optional[str] = None
+    estimated_delivery_date: Optional[datetime] = None
+
+    # Geolocation
+    current_lat: Optional[float] = None
+    current_lng: Optional[float] = None
+
 
 class PackageUpdate(BaseModel):
     """All fields optional — PATCH semantics (only supplied fields are changed)."""
@@ -30,6 +49,25 @@ class PackageUpdate(BaseModel):
     destination: Optional[str] = None
     description: Optional[str] = None
     is_delivered: Optional[bool] = None
+
+    # Sender / Origin
+    sender_name: Optional[str] = None
+    sender_phone: Optional[str] = None
+    sender_address: Optional[str] = None
+    city_collection: Optional[str] = None
+    shipping_date: Optional[datetime] = None
+    shipping_quantity: Optional[int] = None
+    weight_lbs: Optional[float] = None
+    carrier: Optional[str] = None
+
+    # Recipient / Destination
+    delivery_city: Optional[str] = None
+    destination_address: Optional[str] = None
+    estimated_delivery_date: Optional[datetime] = None
+
+    # Geolocation
+    current_lat: Optional[float] = None
+    current_lng: Optional[float] = None
 
 
 # ── Response schemas ────────────────────────────────────────────────────────
@@ -47,6 +85,26 @@ class PackageOut(BaseModel):
     current_status: Optional[str]
     current_location: Optional[str]
     is_delivered: bool
+
+    # Sender / Origin
+    sender_name: Optional[str]
+    sender_phone: Optional[str]
+    sender_address: Optional[str]
+    city_collection: Optional[str]
+    shipping_date: Optional[datetime]
+    shipping_quantity: Optional[int]
+    weight_lbs: Optional[float]
+    carrier: Optional[str]
+
+    # Recipient / Destination
+    delivery_city: Optional[str]
+    destination_address: Optional[str]
+    estimated_delivery_date: Optional[datetime]
+
+    # Geolocation
+    current_lat: Optional[float]
+    current_lng: Optional[float]
+
     created_at: datetime
     updated_at: datetime
 

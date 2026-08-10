@@ -17,4 +17,4 @@ services:
   db:
     # Expose DB so you can inspect with pgAdmin / TablePlus / DBeaver
     ports:
-      - "5432:5432"
+      - "5433:5432"
