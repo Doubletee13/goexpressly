@@ -257,12 +257,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Timeline accordion toggle handler
+    const btnTimelineToggle = document.getElementById('btn-timeline-toggle');
+    const timelineContent = document.getElementById('timeline-content');
+    const timelineChevron = document.getElementById('timeline-chevron');
+
+    if (btnTimelineToggle && timelineContent && timelineChevron) {
+        btnTimelineToggle.addEventListener('click', () => {
+            const isHidden = timelineContent.classList.contains('hidden');
+            if (isHidden) {
+                timelineContent.classList.remove('hidden');
+                timelineChevron.classList.remove('-rotate-90');
+                timelineChevron.classList.add('rotate-0');
+                btnTimelineToggle.setAttribute('aria-expanded', 'true');
+            } else {
+                timelineContent.classList.add('hidden');
+                timelineChevron.classList.remove('rotate-0');
+                timelineChevron.classList.add('-rotate-90');
+                btnTimelineToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
     // ── Timeline ───────────────────────────────────────────────────────────────
 
     function renderTimeline(history) {
         const tl = document.getElementById('res-timeline');
         const noEvents = document.getElementById('res-no-events');
+        const badgeCount = document.getElementById('timeline-badge-count');
         tl.innerHTML = '';
+
+        if (badgeCount) {
+            badgeCount.textContent = `${history.length} event${history.length === 1 ? '' : 's'}`;
+        }
 
         if (!history.length) { noEvents.classList.remove('hidden'); return; }
         noEvents.classList.add('hidden');

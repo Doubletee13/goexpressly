@@ -6,7 +6,7 @@ All endpoints require a valid JWT supplied as Authorization: Bearer <token>.
 """
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_admin, get_db
@@ -18,6 +18,7 @@ from app.schemas.package import (
     PackageUpdate,
 )
 from app.services import package_service
+from app.services.email_service import send_creation_email
 
 router = APIRouter(prefix="/api/packages", tags=["Packages"])
 
@@ -30,10 +31,12 @@ router = APIRouter(prefix="/api/packages", tags=["Packages"])
 )
 def create_package(
     body: PackageCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_admin),
 ) -> PackageOut:
     package = package_service.create_package(db, data=body, admin_id=current_admin.id)
+    background_tasks.add_task(send_creation_email, package.id)
     return PackageOut.model_validate(package)
 
 
