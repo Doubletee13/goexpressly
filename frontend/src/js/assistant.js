@@ -266,22 +266,54 @@
                     'Customs Clearance': 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
                     'Picked Up': 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30'
                 };
-                const badgeClass = statusColors[t.status] || 'bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/30';
-                const displayLocation = t.display_name || t.formatted_address || 'Facility Location';
+                const statusVal = t.status || t.current_status || 'Active';
+                const badgeClass = statusColors[statusVal] || 'bg-brand-500/15 text-brand-600 dark:text-brand-400 border-brand-500/30';
+                const displayLocation = t.current_location || t.display_name || t.formatted_address || t.origin || 'Package Location Active';
 
                 cardHTML = `
-          <div class="mt-2 p-3.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 w-full text-xs space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="font-mono font-bold text-slate-800 dark:text-slate-100">${t.tracking_id}</span>
-              <span class="px-2 py-0.5 rounded-full border text-[11px] font-semibold ${badgeClass}">${t.status}</span>
+          <div class="mt-2.5 p-3.5 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 w-full text-xs space-y-3 shadow-md">
+            <!-- Visual Snippet Image Card Header -->
+            <div class="relative w-full rounded-xl overflow-hidden bg-gradient-to-r from-brand-600 via-sky-600 to-indigo-600 p-3.5 text-white shadow-inner">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full">Package Snippet</span>
+                <span class="text-xs font-mono font-extrabold bg-black/30 px-2.5 py-0.5 rounded-md border border-white/20">${t.tracking_id}</span>
+              </div>
+              <div class="flex items-end justify-between gap-2">
+                <div>
+                  <div class="text-[10px] text-sky-100 uppercase tracking-wide font-medium">Route Path</div>
+                  <div class="text-xs font-bold truncate max-w-[150px]">${this.escapeHTML(t.origin || 'Origin')} ➔ ${this.escapeHTML(t.destination || 'Destination')}</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-sky-100 uppercase tracking-wide font-medium">Current Location</div>
+                  <div class="text-xs font-bold truncate max-w-[130px]">📍 ${this.escapeHTML(displayLocation)}</div>
+                </div>
+              </div>
+              <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-white/10 rounded-full blur-xs pointer-events-none"></div>
             </div>
-            <div class="text-slate-600 dark:text-slate-300 leading-snug">
-              📍 <strong>Location:</strong> ${this.escapeHTML(displayLocation)}
+
+            <!-- Detailed Grid Info -->
+            <div class="space-y-1.5 pt-0.5">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Current Status:</span>
+                <span class="px-2 py-0.5 rounded-full border text-[11px] font-bold ${badgeClass}">${this.escapeHTML(statusVal)}</span>
+              </div>
+              ${t.recipient_name ? `<div class="flex items-center justify-between text-slate-700 dark:text-slate-200">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Recipient:</span>
+                <span class="font-semibold">${this.escapeHTML(t.recipient_name)}</span>
+              </div>` : ''}
+              ${t.carrier ? `<div class="flex items-center justify-between text-slate-700 dark:text-slate-200">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Carrier:</span>
+                <span class="font-semibold">${this.escapeHTML(t.carrier)}</span>
+              </div>` : ''}
+              ${t.estimated_delivery_date ? `<div class="flex items-center justify-between text-slate-700 dark:text-slate-200">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Est. Delivery:</span>
+                <span class="font-semibold text-brand-500 dark:text-brand-400">${new Date(t.estimated_delivery_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+              </div>` : ''}
             </div>
-            ${t.recipient_name ? `<div class="text-slate-500 dark:text-slate-400">👤 <strong>Recipient:</strong> ${this.escapeHTML(t.recipient_name)}</div>` : ''}
+
             <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex justify-between items-center">
-              <a href="track.html?id=${encodeURIComponent(t.tracking_id)}" class="text-brand-500 dark:text-brand-400 font-semibold hover:underline flex items-center gap-1">
-                View Live Map Pin →
+              <a href="track.html?id=${encodeURIComponent(t.tracking_id)}" class="text-brand-500 dark:text-brand-400 font-bold hover:underline flex items-center gap-1.5">
+                Full Details & Map Pin →
               </a>
             </div>
           </div>
@@ -391,17 +423,19 @@
                 const res = await fetch(`${API_BASE}/tracking/${encodeURIComponent(trackingId)}`);
                 if (res.ok) {
                     const data = await res.json();
+                    const status = data.current_status || (data.is_delivered ? 'Delivered' : 'In Transit');
                     this.addBotMessage(
-                        `I found active tracking details for **${trackingId}**!`,
+                        `I retrieved live tracking data for **${trackingId}**:`,
                         [
-                            { label: '📍 View Detailed Timeline', action: 'track_view' },
+                            { label: '📍 View Map & Full Timeline', action: 'track_view' },
                             { label: '👤 Speak with Support', action: 'human_support' }
                         ],
-                        { type: 'tracking', data }
+                        { type: 'tracking', data: { ...data, status } }
                     );
                 } else {
                     this.addBotMessage(
-                        `I could not find tracking ID **${trackingId}** in our active system. Please verify your code format (e.g. \`GX-VSVMCTRXU8\`).`,
+                        `We searched our system but could not locate tracking ID **${trackingId}**.\n\n` +
+                        `💡 **Helpful Hint:** GoExpressly tracking numbers are formatted starting with \`GX-\` (for example: \`GX-VSVMCTRXU8\`). Please verify your tracking number for any typos.`,
                         [
                             { label: '🔍 Try Another ID', action: 'track_prompt' },
                             { label: '👤 Contact Support Desk', action: 'human_support' }
@@ -410,7 +444,7 @@
                 }
             } catch (err) {
                 this.addBotMessage(
-                    `Unable to connect to live tracking server right now. Would you like to contact our support team in Irving, Texas?`,
+                    `Unable to connect to live tracking service at this moment. Our team in Irving, Texas is standing by to help!`,
                     [{ label: '👤 Contact Human Support', action: 'human_support' }]
                 );
             }
