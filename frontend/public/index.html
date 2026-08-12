@@ -153,6 +153,35 @@
 
 <body class="antialiased">
 
+  <!-- ── Global Preloader Overlay ────────────────────────────────────── -->
+  <div id="app-preloader"
+    class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 transition-opacity duration-400 ease-out">
+    <div
+      class="relative flex flex-col items-center p-8 sm:p-10 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-2xl max-w-sm w-full mx-4 text-center">
+      <!-- Logo Container with Pulse Ring -->
+      <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-brand-500/20 animate-ping opacity-75"></div>
+        <div
+          class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
+          <svg class="w-10 h-10 text-white" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(0, 1)">
+              <path fill="currentColor" d="M8 0 L32 15 L8 30 L15 15 Z" />
+              <path fill="white" d="M0 0 L24 15 L0 30 L7 15 Z" opacity="0.75" />
+            </g>
+          </svg>
+        </div>
+      </div>
+      <!-- Brand & Message -->
+      <h3 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight mb-1">GoExpressly</h3>
+      <p class="text-xs text-slate-400 dark:text-slate-500 mb-6 font-medium">Securing fast delivery portal...</p>
+      <!-- Animated Progress Bar -->
+      <div class="w-full h-1.5 bg-slate-200/60 dark:bg-slate-800 rounded-full overflow-hidden relative">
+        <div class="h-full bg-gradient-to-r from-brand-500 via-sky-400 to-brand-500 rounded-full animate-pulse-loader">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── HEADER ───────────────────────────────────────────────────── -->
   <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

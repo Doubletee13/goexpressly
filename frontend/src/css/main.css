@@ -295,3 +295,23 @@
     transform: scale(0.8);
   }
 }
+
+@keyframes pulseLoader {
+  0% {
+    left: -50%;
+    width: 30%;
+  }
+  50% {
+    left: 35%;
+    width: 50%;
+  }
+  100% {
+    left: 100%;
+    width: 30%;
+  }
+}
+
+.animate-pulse-loader {
+  position: absolute;
+  animation: pulseLoader 1.5s ease-in-out infinite;
+}

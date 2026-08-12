@@ -72,3 +72,24 @@ const ThemeManager = (() => {
 })();
 
 document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
+
+// Global App Preloader dismissal
+(() => {
+    function hidePreloader() {
+        const loader = document.getElementById('app-preloader');
+        if (loader && !loader.classList.contains('opacity-0')) {
+            loader.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+            }, 450);
+        }
+    }
+
+    if (document.readyState === 'complete') {
+        hidePreloader();
+    } else {
+        window.addEventListener('load', hidePreloader);
+        // Fallback max 2 seconds
+        setTimeout(hidePreloader, 2000);
+    }
+})();
