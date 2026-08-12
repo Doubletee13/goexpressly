@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard — GoExpressly Admin</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="dist/css/main.min.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         /* Autocomplete dropdown */
         .autocomplete-wrap {
@@ -279,21 +281,10 @@
                             type="datetime-local" class="form-input" /></div>
                     <div><label class="field-label">Shipping Qty</label><input name="shipping_quantity" type="number"
                             class="form-input" /></div>
-                    <div><label class="field-label">Carrier</label><input name="carrier" class="form-input" /></div>
-                    <div class="sm:col-span-2"><label class="field-label">Sender Address</label><textarea
-                            name="sender_address" class="form-input resize-none" rows="2"></textarea></div>
 
                     <div
                         class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-semibold text-sm border-b border-brand-200/50 pb-1 mt-4">
                         Recipient / Dest Details</div>
-                    <div>
-                        <label class="field-label">Delivery City</label>
-                        <div class="autocomplete-wrap">
-                            <input name="delivery_city" id="create-deliverycity-input" class="form-input"
-                                placeholder="e.g. London, UK" autocomplete="off" />
-                            <ul id="create-deliverycity-dropdown" class="autocomplete-dropdown hidden"></ul>
-                        </div>
-                    </div>
                     <div><label class="field-label">Est. Delivery Date</label><input name="estimated_delivery_date"
                             type="datetime-local" class="form-input" /></div>
                     <div class="sm:col-span-2"><label class="field-label">Destination Address</label><textarea
@@ -366,18 +357,20 @@
                 <div id="event-minimap-wrap" class="hidden sm:col-span-2">
                     <label class="field-label flex items-center gap-2">
                         📍 Fine-tune Pin Location
-                        <span class="text-xs text-slate-400 font-normal">Drag the pin onto the exact building</span>
+                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Drag the pin onto the exact
+                            building</span>
                     </label>
                     <div id="event-minimap"
-                        class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm"
+                        class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 shadow-sm"
                         style="height:220px;width:100%;"></div>
-                    <p class="text-xs text-slate-400 mt-1">Drag the marker to correct the pin position. Coordinates
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">Drag the marker to correct
+                        the pin position. Coordinates
                         auto-update.</p>
                 </div>
 
                 <div>
                     <label class="field-label">Facility / Display Name <span
-                            class="text-xs text-slate-400 font-normal">(Optional, e.g. USPS Customs
+                            class="text-xs text-slate-600 dark:text-slate-400 font-medium">(Optional, e.g. USPS Customs
                             Office)</span></label>
                     <input name="display_name" id="event-display-name" class="form-input"
                         placeholder="e.g. USPS International Mail Facility" />

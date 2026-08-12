@@ -232,12 +232,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         dropdownId: 'create-citycollection-dropdown',
     });
 
-    // Initialise autocomplete for Create Package modal (Delivery City)
-    initAutocomplete({
-        inputId: 'create-deliverycity-input',
-        dropdownId: 'create-deliverycity-dropdown',
-    });
-
     // Initialise autocomplete for Add Event modal (Location)
     initAutocomplete({
         inputId: 'event-location-input',
@@ -262,27 +256,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const pos = [lat, lng];
 
-        if (!eventMiniMap) {
-            // Wait for Leaflet if not yet loaded
-            const tryInit = setInterval(() => {
-                if (typeof L === 'undefined') return;
-                clearInterval(tryInit);
+        const initMap = () => {
+            if (typeof L === 'undefined') return;
 
+            if (!eventMiniMap) {
                 eventMiniMap = L.map('event-minimap', {
                     zoomControl: true,
                     scrollWheelZoom: true,
                     attributionControl: false,
                 });
-                eventMiniMap.setView(pos, 17);
 
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    attribution: 'Esri World Imagery'
+                    attribution: '© OpenStreetMap'
                 }).addTo(eventMiniMap);
 
                 const icon = L.divIcon({
                     className: '',
-                    html: `<div style="width:28px;height:28px;background:#3B9EBF;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);cursor:grab"></div>`,
+                    html: `<div style="width:28px;height:28px;background:#0ea5e9;border:3px solid #ffffff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,0.4);cursor:grab"></div>`,
                     iconSize: [28, 28],
                     iconAnchor: [14, 14],
                 });
@@ -291,23 +282,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 eventMiniMarker.on('dragend', () => {
                     const { lat: newLat, lng: newLng } = eventMiniMarker.getLatLng();
-                    document.getElementById('event-lat').value = newLat.toFixed(6);
-                    document.getElementById('event-lng').value = newLng.toFixed(6);
+                    const latEl = document.getElementById('event-lat');
+                    const lngEl = document.getElementById('event-lng');
+                    if (latEl) latEl.value = newLat.toFixed(6);
+                    if (lngEl) lngEl.value = newLng.toFixed(6);
                     const status = document.getElementById('event-geocode-status');
                     if (status) {
-                        status.textContent = `✓ Pin adjusted: ${newLat.toFixed(5)}, ${newLng.toFixed(5)}`;
+                        status.textContent = `✓ Pin position adjusted: ${newLat.toFixed(5)}, ${newLng.toFixed(5)}`;
                         status.className = 'text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400';
                     }
                 });
+            }
 
-                setTimeout(() => { if (eventMiniMap) eventMiniMap.invalidateSize(); }, 150);
-            }, 100);
-        } else {
-            eventMiniMap.setView(pos, 17);
+            eventMiniMap.setView(pos, 16);
             if (eventMiniMarker) {
                 eventMiniMarker.setLatLng(pos);
             }
-            setTimeout(() => { if (eventMiniMap) eventMiniMap.invalidateSize(); }, 150);
+
+            [50, 150, 300].forEach(delay => {
+                setTimeout(() => {
+                    if (eventMiniMap) eventMiniMap.invalidateSize();
+                }, delay);
+            });
+        };
+
+        if (typeof L === 'undefined') {
+            const checkL = setInterval(() => {
+                if (typeof L !== 'undefined') {
+                    clearInterval(checkL);
+                    initMap();
+                }
+            }, 100);
+        } else {
+            initMap();
         }
     }
 

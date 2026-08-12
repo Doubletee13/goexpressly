@@ -36,15 +36,12 @@ def create_package(
         # Sender / Origin fields
         sender_name=data.sender_name,
         sender_phone=data.sender_phone,
-        sender_address=data.sender_address,
         city_collection=data.city_collection,
         shipping_date=data.shipping_date,
         shipping_quantity=data.shipping_quantity,
         weight_lbs=data.weight_lbs,
-        carrier=data.carrier,
 
         # Recipient / Destination fields
-        delivery_city=data.delivery_city,
         destination_address=data.destination_address,
         estimated_delivery_date=data.estimated_delivery_date,
 

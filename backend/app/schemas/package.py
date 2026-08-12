@@ -23,15 +23,12 @@ class PackageCreate(BaseModel):
     # Sender / Origin
     sender_name: Optional[str] = None
     sender_phone: Optional[str] = None
-    sender_address: Optional[str] = None
     city_collection: Optional[str] = None
     shipping_date: Optional[datetime] = None
     shipping_quantity: Optional[int] = None
     weight_lbs: Optional[float] = None
-    carrier: Optional[str] = None
 
     # Recipient / Destination
-    delivery_city: Optional[str] = None
     destination_address: Optional[str] = None
     estimated_delivery_date: Optional[datetime] = None
 
@@ -54,15 +51,12 @@ class PackageUpdate(BaseModel):
     # Sender / Origin
     sender_name: Optional[str] = None
     sender_phone: Optional[str] = None
-    sender_address: Optional[str] = None
     city_collection: Optional[str] = None
     shipping_date: Optional[datetime] = None
     shipping_quantity: Optional[int] = None
     weight_lbs: Optional[float] = None
-    carrier: Optional[str] = None
 
     # Recipient / Destination
-    delivery_city: Optional[str] = None
     destination_address: Optional[str] = None
     estimated_delivery_date: Optional[datetime] = None
 
@@ -92,15 +86,12 @@ class PackageOut(BaseModel):
     # Sender / Origin
     sender_name: Optional[str]
     sender_phone: Optional[str]
-    sender_address: Optional[str]
     city_collection: Optional[str]
     shipping_date: Optional[datetime]
     shipping_quantity: Optional[int]
     weight_lbs: Optional[float]
-    carrier: Optional[str]
 
     # Recipient / Destination
-    delivery_city: Optional[str]
     destination_address: Optional[str]
     estimated_delivery_date: Optional[datetime]
 
