@@ -176,13 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sender section
         const senderSection = document.getElementById('sender-section');
-        const hasSender = data.sender_name || data.city_collection || data.origin ||
-            data.shipping_date || data.weight_lbs != null;
+        const hasSender = data.sender_name || data.shipping_date || data.weight_lbs != null;
         if (hasSender) {
-            setText('res-city-collection', data.city_collection);
-            setText('res-origin-city', data.origin);
-            setText('res-shipping-date', fmtDate(data.shipping_date));
             setText('res-sender-name', data.sender_name);
+            setText('res-shipping-date', fmtDate(data.shipping_date));
             setText('res-weight', data.weight_lbs != null ? String(data.weight_lbs) : null);
             senderSection.classList.remove('hidden');
         } else {
@@ -191,14 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Recipient section
         const recipientSection = document.getElementById('recipient-section');
-        const hasRecipient = data.delivery_city || data.destination ||
-            data.destination_address || data.estimated_delivery_date || data.recipient_name;
+        const hasRecipient = data.destination_address || data.estimated_delivery_date || data.recipient_name;
         if (hasRecipient) {
-            setText('res-delivery-city', data.delivery_city);
-            setText('res-dest-city', data.destination);
-            setText('res-dest-shipping-time', data.carrier);
-            setText('res-delivery-time', fmtDateTime(data.estimated_delivery_date));
             setText('res-recipient-name', data.recipient_name);
+            setText('res-delivery-time', fmtDateTime(data.estimated_delivery_date));
             setText('res-dest-address', data.destination_address);
             recipientSection.classList.remove('hidden');
         } else {

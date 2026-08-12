@@ -241,10 +241,10 @@
                     <div class="sm:col-span-2"><label class="field-label">Recipient Phone</label><input
                             name="recipient_phone" class="form-input" /></div>
 
-                    <!-- Section 2: Origin & Collection Details -->
+                    <!-- Section 2: Origin & Shipping Details -->
                     <div
                         class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-3 flex items-center gap-1.5">
-                        <span>🛫 Origin & Collection Details</span>
+                        <span>🛫 Origin & Shipping Details</span>
                     </div>
                     <div><label class="field-label">Sender Name</label><input name="sender_name" class="form-input" />
                     </div>
@@ -264,26 +264,18 @@
                         <input type="hidden" name="display_name" id="create-display-name" />
                     </div>
                     <div>
-                        <label class="field-label">City of Collection</label>
-                        <div class="autocomplete-wrap">
-                            <input name="city_collection" id="create-citycollection-input" class="form-input"
-                                placeholder="e.g. Berlin, DE" autocomplete="off" />
-                            <ul id="create-citycollection-dropdown" class="autocomplete-dropdown hidden"></ul>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Destination & Delivery Details -->
-                    <div
-                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-3 flex items-center gap-1.5">
-                        <span>🛬 Destination & Delivery Details</span>
-                    </div>
-                    <div>
                         <label class="field-label">Destination *</label>
                         <div class="autocomplete-wrap">
                             <input name="destination" id="create-destination-input" class="form-input"
                                 placeholder="e.g. London, UK" required autocomplete="off" />
                             <ul id="create-destination-dropdown" class="autocomplete-dropdown hidden"></ul>
                         </div>
+                    </div>
+
+                    <!-- Section 3: Delivery Details -->
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-3 flex items-center gap-1.5">
+                        <span>📦 Delivery Details</span>
                     </div>
                     <div><label class="field-label">Weight (lbs)</label><input name="weight_lbs" type="number"
                             step="0.01" class="form-input" placeholder="e.g. 5.5" /></div>
