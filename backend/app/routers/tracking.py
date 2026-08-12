@@ -53,14 +53,11 @@ def track_package(
         # Sender / Origin
         sender_name=package.sender_name,
         sender_phone=package.sender_phone,
-        sender_address=package.sender_address,
         city_collection=package.city_collection,
         shipping_date=package.shipping_date,
         shipping_quantity=package.shipping_quantity,
         weight_lbs=package.weight_lbs,
-        carrier=package.carrier,
         # Recipient / Destination
-        delivery_city=package.delivery_city,
         destination_address=package.destination_address,
         estimated_delivery_date=package.estimated_delivery_date,
         # Geolocation

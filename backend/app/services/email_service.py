@@ -106,7 +106,7 @@ def _build_creation_html(package: Package) -> str:
               </tr>
               <tr style="background-color:#f8fafc;">
                 <td style="padding:12px 16px;font-weight:600;color:#64748b;border-bottom:1px solid #e2e8f0;width:120px;">Carrier</td>
-                <td style="padding:12px 16px;color:#334155;border-bottom:1px solid #e2e8f0;">{package.carrier or 'GoExpressly Express'}</td>
+                <td style="padding:12px 16px;color:#334155;border-bottom:1px solid #e2e8f0;">GoExpressly Express</td>
               </tr>
               <tr>
                 <td style="padding:12px 16px;font-weight:600;color:#64748b;width:120px;">Est. Delivery</td>
@@ -151,7 +151,7 @@ def _build_creation_text(package: Package) -> str:
         f"Tracking ID: {package.tracking_id}\n"
         f"Origin: {package.origin or 'N/A'}\n"
         f"Destination: {package.destination or 'N/A'}\n"
-        f"Carrier: {package.carrier or 'GoExpressly'}\n\n"
+        f"Carrier: GoExpressly Express\n\n"
         f"Track your package live: {track_url}\n\n"
         f"GoExpressly Logistics • Irving, Texas"
     )

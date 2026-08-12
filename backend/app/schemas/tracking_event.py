@@ -58,15 +58,12 @@ class PublicTrackingResponse(BaseModel):
     # Sender / Origin
     sender_name: Optional[str]
     sender_phone: Optional[str]
-    sender_address: Optional[str]
     city_collection: Optional[str]
     shipping_date: Optional[datetime]
     shipping_quantity: Optional[int]
     weight_lbs: Optional[float]
-    carrier: Optional[str]
 
     # Recipient / Destination
-    delivery_city: Optional[str]
     destination_address: Optional[str]
     estimated_delivery_date: Optional[datetime]
 
