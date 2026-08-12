@@ -312,7 +312,7 @@
             </div>
 
             <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex justify-between items-center">
-              <a href="track.html?id=${encodeURIComponent(t.tracking_id)}" class="text-brand-500 dark:text-brand-400 font-bold hover:underline flex items-center gap-1.5">
+              <a href="/track?id=${encodeURIComponent(t.tracking_id)}" class="text-brand-500 dark:text-brand-400 font-bold hover:underline flex items-center gap-1.5">
                 Full Details & Map Pin →
               </a>
             </div>
@@ -327,7 +327,7 @@
                     `Office: Irving, Texas Hub\n\nPlease follow up with me regarding my inquiry.\n\nThank you!`
                 );
                 const mailtoUrl = `mailto:${SUPPORT_EMAIL}?subject=${mailSubject}&body=${mailBody}`;
-                const contactUrl = trackingId ? `contact.html?tracking_id=${encodeURIComponent(trackingId)}` : `contact.html`;
+                const contactUrl = trackingId ? `/contact?tracking_id=${encodeURIComponent(trackingId)}` : `/contact`;
 
                 cardHTML = `
           <div class="mt-2 p-4 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 w-full text-xs space-y-3">

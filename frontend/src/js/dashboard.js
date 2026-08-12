@@ -4,7 +4,7 @@
  */
 document.addEventListener('DOMContentLoaded', async () => {
     // ── Auth guard ──────────────────────────────────────────────────────────
-    if (!Api.isAuthenticated()) { window.location.href = 'login.html'; return; }
+    if (!Api.isAuthenticated()) { window.location.href = '/login'; return; }
 
     try {
         const me = await Api.getMe();

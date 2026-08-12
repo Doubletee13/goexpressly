@@ -28,7 +28,7 @@ from app.database import SessionLocal
 def _get_track_url(tracking_id: str) -> str:
     """Generate canonical public tracking URL with pre-filled tracking ID."""
     base = settings.site_url.rstrip('/')
-    return f"{base}/track.html?id={tracking_id}"
+    return f"{base}/track?id={tracking_id}"
 
 
 def _get_branded_header_html() -> str:

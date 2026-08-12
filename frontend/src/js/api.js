@@ -63,7 +63,7 @@ const Api = {
 
     logout() {
         localStorage.removeItem('gx_token');
-        window.location.href = 'login.html';
+        window.location.href = '/login';
     },
 
     isAuthenticated() {

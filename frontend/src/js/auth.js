@@ -3,7 +3,7 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Redirect if already logged in
-    if (Api.isAuthenticated()) window.location.href = 'dashboard.html';
+    if (Api.isAuthenticated()) window.location.href = '/dashboard';
 
     const form = document.getElementById('login-form');
     const btn = document.getElementById('login-btn');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await Api.login(email, password);
-            window.location.href = 'dashboard.html';
+            window.location.href = '/dashboard';
         } catch (err) {
             errText.textContent = err.status === 401
                 ? 'Invalid email or password. Please try again.'
