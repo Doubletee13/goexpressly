@@ -60,16 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function runTrack(trackingId) {
         showState('loading');
+        const errTitle = document.getElementById('error-title');
         try {
             const data = await Api.trackPackage(trackingId);
             renderResults(data);
         } catch (err) {
             if (err && err.status === 404) {
-                errMsg.textContent = `No package found with tracking ID "${trackingId}". Please check and try again.`;
-            } else if (err && err.message && !err.message.includes('null')) {
+                if (errTitle) errTitle.textContent = 'Package Not Found';
+                errMsg.textContent = `No package found with tracking ID "${trackingId}". Please check the number and try again.`;
+            } else if (err && err.detail) {
+                if (errTitle) errTitle.textContent = 'Package Not Found';
+                errMsg.textContent = err.detail;
+            } else if (err && err.message && !err.message.includes('null') && !err.message.includes('fetch')) {
+                if (errTitle) errTitle.textContent = 'Unable to Retrieve Package';
                 errMsg.textContent = err.message;
             } else {
-                errMsg.textContent = 'A network error occurred. Please try again shortly.';
+                if (errTitle) errTitle.textContent = 'Unable to Retrieve Package';
+                errMsg.textContent = 'We could not connect to the tracking server. Please check your internet connection or try again shortly.';
             }
             showState('error');
         }

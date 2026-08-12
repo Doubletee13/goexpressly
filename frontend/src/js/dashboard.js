@@ -414,13 +414,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('create-package-btn').addEventListener('click', () => {
         document.getElementById('form-create').reset();
         document.getElementById('create-error').classList.add('hidden');
-        document.getElementById('create-location-input').value = '';
-        document.getElementById('create-destination-input').value = '';
-        document.getElementById('create-citycollection-input').value = '';
-        document.getElementById('create-deliverycity-input').value = '';
-        document.getElementById('create-lat').value = '';
-        document.getElementById('create-lng').value = '';
-        document.getElementById('create-geocode-status').textContent = '';
+        ['create-location-input', 'create-destination-input', 'create-citycollection-input', 'create-lat', 'create-lng'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        const statusEl = document.getElementById('create-geocode-status');
+        if (statusEl) statusEl.textContent = '';
         openModal('modal-create');
     });
 
