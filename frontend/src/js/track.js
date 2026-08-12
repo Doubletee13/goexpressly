@@ -177,16 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sender section
         const senderSection = document.getElementById('sender-section');
         const hasSender = data.sender_name || data.city_collection || data.origin ||
-            data.shipping_date || data.carrier || data.sender_address ||
-            data.shipping_quantity != null || data.weight_lbs != null;
+            data.shipping_date || data.weight_lbs != null;
         if (hasSender) {
             setText('res-city-collection', data.city_collection);
             setText('res-origin-city', data.origin);
             setText('res-shipping-date', fmtDate(data.shipping_date));
-            setText('res-carrier', data.carrier);
             setText('res-sender-name', data.sender_name);
-            setText('res-sender-address', data.sender_address);
-            setText('res-shipping-qty', data.shipping_quantity != null ? String(data.shipping_quantity) : null);
             setText('res-weight', data.weight_lbs != null ? String(data.weight_lbs) : null);
             senderSection.classList.remove('hidden');
         } else {

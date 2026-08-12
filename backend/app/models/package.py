@@ -41,7 +41,6 @@ class Package(Base):
     sender_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     city_collection: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shipping_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    shipping_quantity: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     weight_lbs: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 
     # Recipient / Destination details

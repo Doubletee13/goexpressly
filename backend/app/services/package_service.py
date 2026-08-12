@@ -38,7 +38,6 @@ def create_package(
         sender_phone=data.sender_phone,
         city_collection=data.city_collection,
         shipping_date=data.shipping_date,
-        shipping_quantity=data.shipping_quantity,
         weight_lbs=data.weight_lbs,
 
         # Recipient / Destination fields

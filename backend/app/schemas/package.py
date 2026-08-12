@@ -25,7 +25,6 @@ class PackageCreate(BaseModel):
     sender_phone: Optional[str] = None
     city_collection: Optional[str] = None
     shipping_date: Optional[datetime] = None
-    shipping_quantity: Optional[int] = None
     weight_lbs: Optional[float] = None
 
     # Recipient / Destination
@@ -53,7 +52,6 @@ class PackageUpdate(BaseModel):
     sender_phone: Optional[str] = None
     city_collection: Optional[str] = None
     shipping_date: Optional[datetime] = None
-    shipping_quantity: Optional[int] = None
     weight_lbs: Optional[float] = None
 
     # Recipient / Destination
@@ -88,7 +86,6 @@ class PackageOut(BaseModel):
     sender_phone: Optional[str]
     city_collection: Optional[str]
     shipping_date: Optional[datetime]
-    shipping_quantity: Optional[int]
     weight_lbs: Optional[float]
 
     # Recipient / Destination

@@ -55,7 +55,6 @@ def track_package(
         sender_phone=package.sender_phone,
         city_collection=package.city_collection,
         shipping_date=package.shipping_date,
-        shipping_quantity=package.shipping_quantity,
         weight_lbs=package.weight_lbs,
         # Recipient / Destination
         destination_address=package.destination_address,

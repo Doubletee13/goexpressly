@@ -60,7 +60,6 @@ class PublicTrackingResponse(BaseModel):
     sender_phone: Optional[str]
     city_collection: Optional[str]
     shipping_date: Optional[datetime]
-    shipping_quantity: Optional[int]
     weight_lbs: Optional[float]
 
     # Recipient / Destination
