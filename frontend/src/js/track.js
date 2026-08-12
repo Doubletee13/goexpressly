@@ -176,8 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sender section
         const senderSection = document.getElementById('sender-section');
-        const hasSender = data.sender_name || data.shipping_date || data.weight_lbs != null;
+        const hasSender = data.sender_name || data.origin || data.shipping_date || data.weight_lbs != null;
         if (hasSender) {
+            setText('res-origin-city', data.origin);
             setText('res-sender-name', data.sender_name);
             setText('res-shipping-date', fmtDate(data.shipping_date));
             setText('res-weight', data.weight_lbs != null ? String(data.weight_lbs) : null);
@@ -188,8 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Recipient section
         const recipientSection = document.getElementById('recipient-section');
-        const hasRecipient = data.destination_address || data.estimated_delivery_date || data.recipient_name;
+        const hasRecipient = data.recipient_name || data.destination || data.destination_address || data.estimated_delivery_date;
         if (hasRecipient) {
+            setText('res-dest-city', data.destination);
             setText('res-recipient-name', data.recipient_name);
             setText('res-delivery-time', fmtDateTime(data.estimated_delivery_date));
             setText('res-dest-address', data.destination_address);

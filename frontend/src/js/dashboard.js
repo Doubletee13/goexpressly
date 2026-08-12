@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function initAutocomplete({ inputId, dropdownId, latId, lngId, displayNameId, statusId, onSelect }) {
         const input = document.getElementById(inputId);
         const dropdown = document.getElementById(dropdownId);
+        if (!input || !dropdown) return;
+
         const latEl = document.getElementById(latId);
         const lngEl = document.getElementById(lngId);
         const displayNameEl = document.getElementById(displayNameId);
@@ -224,12 +226,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAutocomplete({
         inputId: 'create-destination-input',
         dropdownId: 'create-destination-dropdown',
-    });
-
-    // Initialise autocomplete for Create Package modal (City Collection)
-    initAutocomplete({
-        inputId: 'create-citycollection-input',
-        dropdownId: 'create-citycollection-dropdown',
     });
 
     // Initialise autocomplete for Add Event modal (Location)
@@ -414,7 +410,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('create-package-btn').addEventListener('click', () => {
         document.getElementById('form-create').reset();
         document.getElementById('create-error').classList.add('hidden');
-        ['create-location-input', 'create-destination-input', 'create-citycollection-input', 'create-lat', 'create-lng'].forEach(id => {
+        ['create-location-input', 'create-destination-input', 'create-lat', 'create-lng'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = '';
         });
