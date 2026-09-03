@@ -347,13 +347,14 @@
                                     <label
                                         class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Full
                                         Name *</label>
-                                    <input type="text" required placeholder="John Doe" class="form-input w-full" />
+                                    <input type="text" id="contact-name" required placeholder="John Doe"
+                                        class="form-input w-full" />
                                 </div>
                                 <div>
                                     <label
                                         class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Email
                                         Address *</label>
-                                    <input type="email" required placeholder="john@example.com"
+                                    <input type="email" id="contact-email" required placeholder="john@example.com"
                                         class="form-input w-full" />
                                 </div>
                             </div>
@@ -363,7 +364,7 @@
                                     <label
                                         class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Subject
                                         *</label>
-                                    <select required class="form-input w-full">
+                                    <select id="contact-subject" required class="form-input w-full">
                                         <option value="">Select a topic...</option>
                                         <option value="tracking">Tracking Status Inquiry</option>
                                         <option value="customs">Customs Hold / Documentation</option>
@@ -375,7 +376,7 @@
                                     <label
                                         class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Tracking
                                         ID (Optional)</label>
-                                    <input type="text" placeholder="e.g. GX-A1B2C3D4E5"
+                                    <input type="text" id="contact-tracking-id" placeholder="e.g. GX-A1B2C3D4E5"
                                         class="form-input w-full font-mono" />
                                 </div>
                             </div>
@@ -384,7 +385,7 @@
                                 <label
                                     class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Message
                                     *</label>
-                                <textarea required rows="5"
+                                <textarea id="contact-message" required rows="5"
                                     placeholder="How can we help you with your package or shipment?"
                                     class="form-input w-full resize-y"></textarea>
                             </div>
@@ -503,19 +504,33 @@
             const submitBtn = document.getElementById('submit-btn');
 
             if (form) {
-                form.addEventListener('submit', (e) => {
+                form.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = `Sending message...`;
+                    feedback.classList.add('hidden');
 
-                    setTimeout(() => {
-                        feedback.classList.remove('hidden', 'bg-red-500/10', 'text-red-500');
+                    const name = document.getElementById('contact-name').value;
+                    const email = document.getElementById('contact-email').value;
+                    const subjectE = document.getElementById('contact-subject');
+                    const subject = subjectE.options[subjectE.selectedIndex].text;
+                    const tracking_id = document.getElementById('contact-tracking-id').value;
+                    const message = document.getElementById('contact-message').value;
+
+                    try {
+                        await Api.submitContactForm({ name, email, subject, tracking_id, message });
+                        feedback.classList.remove('hidden', 'bg-red-500/10', 'text-red-500', 'border-red-500/30');
                         feedback.classList.add('bg-emerald-500/15', 'text-emerald-500', 'border', 'border-emerald-500/30');
                         feedback.textContent = '✓ Thank you! Your message has been sent to support@goexpressly.com. An agent will reply shortly.';
                         form.reset();
+                    } catch (err) {
+                        feedback.classList.remove('hidden', 'bg-emerald-500/15', 'text-emerald-500', 'border-emerald-500/30');
+                        feedback.classList.add('bg-red-500/10', 'text-red-500', 'border', 'border-red-500/30');
+                        feedback.textContent = typeof err.detail === 'string' ? err.detail : 'Failed to send message. Please try again.';
+                    } finally {
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Send Message`;
-                    }, 800);
+                    }
                 });
             }
 
