@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Track Package — GoExpressly</title>
+    <meta name="description"
+        content="Enter your GoExpressly tracking ID to see real-time status and full shipment history." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="dist/css/main.min.css" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Google Fonts: Inter + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet" />
+    <script>(function () { var t = localStorage.getItem('goexpressly-theme'); if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })();</script>
+    <style>
+        /* ── Map override ─── */
+        #map-canvas {
+            z-index: 0;
+        }
+
+        .leaflet-container {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom pulsing marker */
+        .pkg-marker-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+        }
+
+        .pkg-marker-pulse {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(59, 158, 191, 0.25);
+            animation: pkgPulse 2s ease-out infinite;
+        }
+
+        .pkg-marker-dot {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            background: #3B9EBF;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 12px rgba(59, 158, 191, 0.6);
+            z-index: 1;
+        }
+
+        @keyframes pkgPulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Progress bar step */
+        .progress-step {
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            right: -50%;
+            height: 2px;
+            background: rgba(148, 163, 184, 0.3);
+            z-index: 0;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.done::after {
+            background: #3B9EBF;
+        }
+
+        /* Timeline connector */
+        .tl-item {
+            position: relative;
+        }
+
+        .tl-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 44px;
+            width: 2px;
+            bottom: 0;
+            background: linear-gradient(to bottom, #3B9EBF33, transparent);
+        }
+
+        /* Leaflet popup custom */
+        /* Leaflet popup — base reset, actual theme colors set by JS */
+        .pkg-popup .leaflet-popup-content-wrapper {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+            border-radius: 12px !important;
+        }
+
+        .pkg-popup .leaflet-popup-tip-container {
+            display: none;
+        }
+
+        .pkg-popup .leaflet-popup-content {
+            margin: 0 !important;
+        }
+
+        .section-header {
+            padding: 14px 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #3B9EBF, #2A7FA0);
+            color: #fff;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            gap: 24px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            flex-shrink: 0;
+        }
+
+        .info-row-val {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2ebf5;
+            text-align: right;
+        }
+
+        html:not(.dark) .info-row-val {
+            color: #1e293b;
+        }
+
+        html:not(.dark) .info-row-label {
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen"
+    style="background:linear-gradient(135deg,var(--color-bg-from) 0%,var(--color-bg-to) 100%);background-attachment:fixed;">
+
+    <!-- ── Global Preloader Overlay ────────────────────────────────────── -->
+    <div id="app-preloader"
+        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 transition-opacity duration-400 ease-out">
+        <div
+            class="relative flex flex-col items-center p-8 sm:p-10 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-2xl max-w-sm w-full mx-4 text-center">
+            <!-- Logo Container with Pulse Ring -->
+            <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full bg-brand-500/20 animate-ping opacity-75"></div>
+                <div
+                    class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 32 32" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(0, 1)">
+                            <path fill="currentColor" d="M8 0 L32 15 L8 30 L15 15 Z" />
+                            <path fill="white" d="M0 0 L24 15 L0 30 L7 15 Z" opacity="0.75" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <!-- Brand & Message -->
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight mb-1">GoExpressly</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-6 font-medium">Fetching tracking details...</p>
+            <!-- Animated Progress Bar -->
+            <div class="w-full h-1.5 bg-slate-200/60 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                <div
+                    class="h-full bg-gradient-to-r from-brand-500 via-sky-400 to-brand-500 rounded-full animate-pulse-loader">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── HEADER ───────────────────────────────────────────────────────── -->
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass mt-3 px-5 py-3 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+                    <a href="/" class="flex items-center gap-3 shrink-0">
+                        <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 sm:h-12 w-auto dark:hidden" />
+                        <img src="assets/logo-dark.svg" alt="GoExpressly"
+                            class="h-10 sm:h-12 w-auto hidden dark:block" />
+                    </a>
+                </div>
+                <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <a href="/#features" class="hover:text-brand-500 transition-colors">Features</a>
+                    <a href="/#how-it-works" class="hover:text-brand-500 transition-colors">How It Works</a>
+                    <a href="/track" class="text-brand-500 font-semibold">Track Package</a>
+                </nav>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button data-theme-toggle aria-label="Toggle theme"
+                        class="p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all">
+                        <svg data-icon="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                        <svg data-icon="moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                        <button id="mobile-menu-btn"
+                            class="lg:hidden p-2 rounded-xl text-slate-500 dark:text-slate-300 hover:bg-white/30 dark:hover:bg-white/10 transition-all"
+                            aria-label="Open menu">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu"
+                class="hidden glass mt-2 px-5 py-4 flex-col gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 lg:hidden shadow-2xl border border-white/20 dark:border-white/10">
+                <!-- Mobile Header with glaring X close button -->
+                <div
+                    class="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800 pb-3 mb-1">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
+                        Navigation Menu
+                    </span>
+                    <button id="mobile-menu-close-btn"
+                        class="py-1 px-3 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 text-xs font-bold transition-colors flex items-center gap-1.5 focus:outline-none"
+                        aria-label="Close menu">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5"
+                            viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Close
+                    </button>
+                </div>
+
+                <a href="/#features" class="py-2 hover:text-brand-500 transition-colors">Features</a>
+                <a href="/#how-it-works" class="py-2 hover:text-brand-500 transition-colors">How It Works</a>
+                <a href="/track" class="py-2 text-brand-500 font-semibold">Track Package</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+
+            <!-- ── Hero search ─────────────────────────────────────── -->
+            <div class="text-center mb-10 animate-slide-up">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-slate-50 mb-3">
+                    Track your <span class="text-brand-500">shipment</span>
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-base">Enter your tracking ID for real-time updates and
+                    full journey history.</p>
+            </div>
+
+            <form id="track-form" class="glass p-3 flex gap-2 sm:gap-3 mb-10 animate-slide-up"
+                style="animation-delay:.05s">
+                <input id="tracking-input" type="text" placeholder="e.g. GX-A1B2C3D4E5"
+                    class="form-input flex-1 font-mono text-base placeholder:font-sans" autocomplete="off"
+                    spellcheck="false" />
+                <button type="submit" id="track-btn" class="btn-primary shrink-0 py-3 px-5 sm:px-8 gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <span class="hidden sm:inline">Track</span>
+                </button>
+            </form>
+
+            <!-- ── Loading ─────────────────────────────────────────── -->
+            <div id="state-loading" class="hidden text-center py-24">
+                <div class="relative inline-flex items-center justify-center w-16 h-16 mb-6">
+                    <div class="absolute inset-0 rounded-full border-4 border-brand-500/20"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-t-brand-500 animate-spin"></div>
+                    <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    </svg>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 font-medium">Fetching your package details…</p>
+            </div>
+
+            <!-- ── Error ───────────────────────────────────────────── -->
+            <div id="state-error" class="hidden">
+                <div class="glass p-10 text-center max-w-md mx-auto">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-5">
+                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                    </div>
+                    <h2 id="error-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Package Not
+                        Found</h2>
+                    <p id="error-message" class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- ── Results ─────────────────────────────────────────── -->
+            <div id="state-results" class="hidden space-y-5 animate-slide-up">
+
+                <!-- Status hero card -->
+                <div class="glass-lg overflow-hidden">
+                    <!-- Top accent bar -->
+                    <div id="res-status-bar" class="h-1.5 bg-gradient-to-r from-brand-400 to-brand-600 w-full"></div>
+                    <div class="p-6 sm:p-8">
+                        <!-- Top row: tracking ID + badge -->
+                        <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                            <div>
+                                <p class="text-xs text-slate-400 uppercase tracking-widest mb-1.5">Tracking Number</p>
+                                <p id="res-tracking-id" class="tracking-chip text-sm sm:text-base"></p>
+                            </div>
+                            <div id="res-badge-wrap" class="mt-1"></div>
+                        </div>
+
+                        <!-- Progress steps -->
+                        <div id="res-progress" class="flex items-start justify-between mb-6 gap-1 hidden">
+                            <div class="progress-step text-center" data-step="registered">
+                                <div
+                                    class="progress-dot w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center mx-auto mb-2 transition-all">
+                                    <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"></div>
+                                </div>
+                                <p class="text-[9px] sm:text-[11px] font-medium text-slate-400 leading-tight">Registered
+                                </p>
+                            </div>
+                            <div class="progress-step text-center" data-step="transit">
+                                <div
+                                    class="progress-dot w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center mx-auto mb-2 transition-all">
+                                    <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"></div>
+                                </div>
+                                <p class="text-[9px] sm:text-[11px] font-medium text-slate-400 leading-tight">In Transit
+                                </p>
+                            </div>
+                            <div class="progress-step text-center" data-step="customs">
+                                <div
+                                    class="progress-dot w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center mx-auto mb-2 transition-all">
+                                    <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"></div>
+                                </div>
+                                <p class="text-[9px] sm:text-[11px] font-medium text-slate-400 leading-tight">Out for<br
+                                        class="sm:hidden"> Delivery</p>
+                            </div>
+                            <div class="progress-step text-center" data-step="delivered">
+                                <div
+                                    class="progress-dot w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center mx-auto mb-2 transition-all">
+                                    <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"></div>
+                                </div>
+                                <p class="text-[9px] sm:text-[11px] font-medium text-slate-400 leading-tight">Delivered
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Key details grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-6">
+                            <div class="glass rounded-xl p-4">
+                                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Recipient</p>
+                                <p id="res-recipient"
+                                    class="font-bold text-slate-800 dark:text-slate-100 text-base leading-tight"></p>
+                            </div>
+                            <div class="glass rounded-xl p-4">
+                                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">From</p>
+                                <p id="res-origin"
+                                    class="font-bold text-slate-800 dark:text-slate-100 text-base leading-tight">—</p>
+                            </div>
+                            <div class="glass rounded-xl p-4">
+                                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">To</p>
+                                <p id="res-destination"
+                                    class="font-bold text-slate-800 dark:text-slate-100 text-base leading-tight">—</p>
+                            </div>
+                        </div>
+
+                        <!-- Current status live bar -->
+                        <div id="res-current-status-wrap"
+                            class="hidden glass rounded-xl px-5 py-4 flex items-center gap-4">
+                            <div
+                                class="shrink-0 w-10 h-10 rounded-full bg-brand-500/15 flex items-center justify-center">
+                                <span class="w-3 h-3 rounded-full bg-brand-500 animate-pulse-soft block"></span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-slate-400 mb-0.5">Current Status</p>
+                                <p id="res-current-status"
+                                    class="font-bold text-slate-800 dark:text-slate-100 truncate"></p>
+                                <p id="res-current-location" class="text-xs text-brand-500 mt-0.5 truncate"></p>
+                            </div>
+                            <svg class="w-5 h-5 text-brand-400 shrink-0" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 13 6 13s6-7.75 6-13c0-3.314-2.686-6-6-6z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Collapsible Journey Timeline (Placed after Progress Steps Card) ──── -->
+                <div id="timeline-accordion" class="glass-lg overflow-hidden border border-brand-500/20 shadow-lg">
+                    <button id="btn-timeline-toggle" type="button" aria-expanded="false"
+                        class="w-full p-5 sm:p-6 flex items-center justify-between hover:bg-white/10 dark:hover:bg-white/5 transition-colors focus:outline-none cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500/15 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <h2
+                                    class="text-base font-bold text-slate-800 dark:text-slate-50 flex items-center gap-2">
+                                    Journey Timeline
+                                </h2>
+                                <p class="text-xs text-slate-400">Click to view complete milestone & scan history</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="timeline-badge-count"
+                                class="text-xs font-semibold px-3 py-1 rounded-full bg-brand-500/10 text-brand-500 dark:text-brand-400 border border-brand-500/20">0
+                                events</span>
+                            <div
+                                class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                                <svg id="timeline-chevron"
+                                    class="w-4 h-4 text-slate-500 transition-transform duration-300 transform -rotate-90"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </button>
+                    <div id="timeline-content"
+                        class="hidden border-t border-slate-200/50 dark:border-slate-800/80 p-6 sm:p-8 bg-slate-50/50 dark:bg-slate-900/40 transition-all">
+                        <div id="res-timeline" class="space-y-0"></div>
+                        <p id="res-no-events" class="hidden text-center text-slate-400 py-6 text-sm">No tracking events
+                            logged yet.</p>
+                    </div>
+                </div>
+
+                <!-- ── Live Map ──────────────────────────────────────── -->
+                <div id="map-section" class="glass-lg overflow-hidden hidden relative">
+                    <!-- Map / Satellite View Mode Toggle -->
+                    <div id="map-controls"
+                        class="absolute top-3 right-3 z-[400] flex gap-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-1 rounded-xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                        <button type="button" id="btn-map-standard"
+                            class="px-3 py-1 text-xs font-semibold rounded-lg transition-colors bg-brand-500 text-white shadow-sm">Map</button>
+                        <button type="button" id="btn-map-satellite"
+                            class="px-3 py-1 text-xs font-semibold rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Satellite</button>
+                    </div>
+                    <div id="map-canvas" style="height:400px;width:100%;"></div>
+                    <!-- No-coords fallback (visible when package has no location set) -->
+                    <div id="map-no-coords"
+                        class="hidden flex flex-col items-center justify-center py-12 px-6 text-center"
+                        style="height:200px">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 13 6 13s6-7.75 6-13c0-3.314-2.686-6-6-6z" />
+                                <line x1="2" y1="2" x2="22" y2="22" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">No location data</p>
+                        <p class="text-xs text-slate-400">Location data is currently unavailable for this package.</p>
+                    </div>
+                    <div class="px-6 py-3 flex items-center gap-2 border-t border-white/10">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 map-blink"></span>
+                        <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">Live Package Location</p>
+                        <p id="map-coords" class="ml-auto text-xs text-slate-400 font-mono"></p>
+                    </div>
+                </div>
+
+                <!-- ── Sender / Recipient in two columns on md+ ───── -->
+                <div id="sender-recipient-grid" class="grid md:grid-cols-2 gap-5 hidden">
+
+                    <!-- Sender / Origin -->
+                    <div id="sender-section" class="glass-lg overflow-hidden hidden">
+                        <div class="section-header">Sender / Origin</div>
+                        <div class="px-6 py-4 space-y-0">
+                            <div class="info-row"><span class="info-row-label">Origin</span><span id="res-origin-city"
+                                    class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Contact name</span><span
+                                    id="res-sender-name" class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Shipping date</span><span
+                                    id="res-shipping-date" class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Weight (lbs)</span><span id="res-weight"
+                                    class="info-row-val">—</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Recipient / Destination -->
+                    <div id="recipient-section" class="glass-lg overflow-hidden hidden">
+                        <div class="section-header">Recipient / Destination</div>
+                        <div class="px-6 py-4 space-y-0">
+                            <div class="info-row"><span class="info-row-label">Destination</span><span
+                                    id="res-dest-city" class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Contact name</span><span
+                                    id="res-recipient-name" class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Est. delivery</span><span
+                                    id="res-delivery-time" class="info-row-val">—</span></div>
+                            <div class="info-row"><span class="info-row-label">Address</span><span id="res-dest-address"
+                                    class="info-row-val">—</span></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Back link -->
+                <div class="text-center pt-2">
+                    <a href="/index.html"
+                        class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-brand-500 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+
+            </div><!-- /state-results -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/20 dark:border-white/10 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                <a href="/index.html" class="flex items-center gap-3">
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto opacity-70 dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly"
+                        class="h-10 w-auto opacity-70 hidden dark:block" />
+                </a>
+
+                <!-- Social Media Links -->
+                <div class="flex items-center gap-3 text-slate-400 dark:text-slate-500">
+                    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter / X"
+                        class="p-2 rounded-lg hover:bg-white/10 hover:text-brand-500 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"
+                        class="p-2 rounded-lg hover:bg-white/10 hover:text-brand-500 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"
+                        class="p-2 rounded-lg hover:bg-white/10 hover:text-brand-500 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.239-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"
+                        class="p-2 rounded-lg hover:bg-white/10 hover:text-brand-500 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-400 dark:text-slate-600">© 2026 GoExpressly. All rights reserved.</p>
+                <p class="text-xs text-slate-400">Irving, Texas, USA · <a href="mailto:support@goexpressly.com"
+                        class="hover:text-brand-500 transition-colors">support@goexpressly.com</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="dist/js/theme.min.js" defer></script>
+    <script src="dist/js/assistant.min.js" defer></script>
+    <script src="dist/js/api.min.js" defer></script>
+    <script src="dist/js/track.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeBtn = document.getElementById('mobile-menu-close-btn');
+
+            function hideMenu() {
+                if (mobileMenu) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                }
+            }
+
+            function toggleMenu() {
+                if (mobileMenu) {
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    if (isHidden) {
+                        mobileMenu.classList.remove('hidden');
+                        mobileMenu.classList.add('flex');
+                    } else {
+                        hideMenu();
+                    }
+                }
+            }
+
+            if (menuBtn) menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+            if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); hideMenu(); });
+
+            document.addEventListener('click', (e) => {
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    const isInside = mobileMenu.contains(e.target) || (menuBtn && menuBtn.contains(e.target));
+                    if (!isInside) hideMenu();
+                }
+            });
+
+            if (mobileMenu) {
+                mobileMenu.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', hideMenu);
+                });
+            }
+        });
+    </script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+</body>
+
+</html>

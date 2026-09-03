@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — GoExpressly Admin</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="dist/css/main.min.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* Autocomplete dropdown */
+        .autocomplete-wrap {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.875rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            max-height: 220px;
+            overflow-y: auto;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dark .autocomplete-dropdown {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <script>(function () { var t = localStorage.getItem('goexpressly-theme'); if (t === 'dark' || (t == null && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })();</script>
+</head>
+
+<body class="antialiased min-h-screen">
+
+    <!-- ── Global Preloader Overlay ────────────────────────────────────── -->
+    <div id="app-preloader"
+        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 transition-opacity duration-400 ease-out">
+        <div
+            class="relative flex flex-col items-center p-8 sm:p-10 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-2xl max-w-sm w-full mx-4 text-center">
+            <!-- Logo Container with Pulse Ring -->
+            <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full bg-brand-500/20 animate-ping opacity-75"></div>
+                <div
+                    class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 32 32" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(0, 1)">
+                            <path fill="currentColor" d="M8 0 L32 15 L8 30 L15 15 Z" />
+                            <path fill="white" d="M0 0 L24 15 L0 30 L7 15 Z" opacity="0.75" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <!-- Brand & Message -->
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight mb-1">GoExpressly</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-6 font-medium">Loading dashboard...</p>
+            <!-- Animated Progress Bar -->
+            <div class="w-full h-1.5 bg-slate-200/60 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                <div
+                    class="h-full bg-gradient-to-r from-brand-500 via-sky-400 to-brand-500 rounded-full animate-pulse-loader">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- ── SIDEBAR ──────────────────────────────────────────────────── -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0">
+            <div class="glass h-full m-3 rounded-2xl p-5 flex flex-col gap-6 overflow-y-auto">
+                <!-- Logo -->
+                <a href="/index.html" class="block">
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                </a>
+
+                <!-- Nav -->
+                <nav class="flex flex-col gap-1 flex-1">
+                    <p class="text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 px-3 mb-2">Management
+                    </p>
+                    <button id="nav-packages" class="sidebar-link active" onclick="showView('packages')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        </svg>
+                        Packages
+                    </button>
+                    <a href="/track.html" target="_blank" class="sidebar-link">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        Public Tracker
+                    </a>
+                </nav>
+
+                <!-- Bottom: Admin info + logout -->
+                <div class="pt-4 border-t border-white/20 dark:border-white/10 flex flex-col gap-3">
+                    <div class="glass rounded-xl p-3">
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Signed in as</p>
+                        <p id="admin-email" class="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">—
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button data-theme-toggle
+                            class="flex-1 glass rounded-xl py-2 px-3 text-sm text-slate-500 dark:text-slate-300 flex items-center gap-2 hover:bg-white/30 dark:hover:bg-white/10 transition-all"
+                            aria-label="Toggle theme">
+                            <svg data-icon="sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="5" />
+                                <path
+                                    d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                            </svg>
+                            <svg data-icon="moon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                            <span id="theme-label">Theme</span>
+                        </button>
+                        <button id="logout-btn"
+                            class="glass rounded-xl py-2 px-3 text-sm text-red-500 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-all"
+                            title="Sign out">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+        <div class="flex-1 lg:ml-[17rem] flex flex-col min-h-screen">
+
+            <!-- Top bar (mobile) -->
+            <div class="lg:hidden flex items-center justify-between p-4 glass m-3 rounded-2xl">
+                <button id="sidebar-toggle" aria-label="Open sidebar" class="text-slate-600 dark:text-slate-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <a href="/index.html" class="block">
+                    <img src="assets/logo-light.svg" alt="GoExpressly" class="h-10 w-auto dark:hidden" />
+                    <img src="assets/logo-dark.svg" alt="GoExpressly" class="h-10 w-auto hidden dark:block" />
+                </a>
+                <div class="w-9"></div>
+            </div>
+
+            <!-- Packages View -->
+            <main id="view-packages" class="flex-1 p-4 lg:p-6 space-y-5">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="heading-md text-slate-800 dark:text-slate-50">Packages</h1>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage all shipments and tracking
+                            events</p>
+                    </div>
+                    <button id="create-package-btn" class="btn-primary shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        New Package
+                    </button>
+                </div>
+
+                <!-- Stats bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="stats-bar">
+                    <div class="glass p-4 text-center">
+                        <p id="stat-total" class="text-2xl font-bold text-brand-500">—</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Total</p>
+                    </div>
+                    <div class="glass p-4 text-center">
+                        <p id="stat-transit" class="text-2xl font-bold text-brand-500">—</p>
+                        <p class="text-xs text-slate-400 mt-0.5">In Transit</p>
+                    </div>
+                    <div class="glass p-4 text-center">
+                        <p id="stat-delivered" class="text-2xl font-bold text-green-500">—</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Delivered</p>
+                    </div>
+                    <div class="glass p-4 text-center">
+                        <p id="stat-page" class="text-2xl font-bold text-slate-500">—</p>
+                        <p class="text-xs text-slate-400 mt-0.5">This Page</p>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="glass-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr
+                                    class="border-b border-white/20 dark:border-white/10 text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wide">
+                                    <th class="px-5 py-4 text-left font-semibold">Tracking ID</th>
+                                    <th class="px-5 py-4 text-left font-semibold hidden sm:table-cell">Recipient</th>
+                                    <th class="px-5 py-4 text-left font-semibold hidden md:table-cell">Status</th>
+                                    <th class="px-5 py-4 text-left font-semibold hidden lg:table-cell">Destination</th>
+                                    <th class="px-5 py-4 text-right font-semibold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packages-table-body">
+                                <tr id="table-loading">
+                                    <td colspan="5" class="text-center py-16 text-slate-400">
+                                        <div
+                                            class="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-3">
+                                        </div>
+                                        Loading packages...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div
+                        class="flex items-center justify-between px-5 py-3 border-t border-white/20 dark:border-white/10">
+                        <button id="prev-page"
+                            class="glass px-4 py-2 text-sm rounded-xl text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-white/40 dark:hover:bg-white/10 transition-all"
+                            disabled>← Prev</button>
+                        <span id="page-info" class="text-xs text-slate-400">—</span>
+                        <button id="next-page"
+                            class="glass px-4 py-2 text-sm rounded-xl text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-white/40 dark:hover:bg-white/10 transition-all"
+                            disabled>Next →</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 hidden lg:hidden"></div>
+
+    <!-- ── MODALS ──────────────────────────────────────────────────── -->
+
+    <!-- Create Package Modal -->
+    <div id="modal-create" class="modal-overlay hidden">
+        <div
+            class="glass-lg w-full max-w-lg p-5 sm:p-7 space-y-4 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
+            <div class="flex items-center justify-between mb-1">
+                <h2 class="heading-sm text-slate-800 dark:text-slate-100">New Package</h2>
+                <button
+                    class="modal-close text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    data-modal="modal-create">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form id="form-create" class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <!-- Section 1: Recipient Info -->
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-1 flex items-center gap-1.5">
+                        <span>👤 Recipient Information</span>
+                    </div>
+                    <div><label class="field-label">Recipient Name *</label><input name="recipient_name"
+                            class="form-input" required /></div>
+                    <div><label class="field-label">Recipient Email *</label><input name="recipient_email" type="email"
+                            class="form-input" required /></div>
+                    <div class="sm:col-span-2"><label class="field-label">Recipient Phone</label><input
+                            name="recipient_phone" class="form-input" /></div>
+
+                    <!-- Section 2: Origin & Shipping Details -->
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-3 flex items-center gap-1.5">
+                        <span>🛫 Origin & Shipping Details</span>
+                    </div>
+                    <div><label class="field-label">Sender Name</label><input name="sender_name" class="form-input" />
+                    </div>
+                    <div><label class="field-label">Sender Phone</label><input name="sender_phone" class="form-input" />
+                    </div>
+                    <div>
+                        <label class="field-label">Origin *</label>
+                        <div class="autocomplete-wrap">
+                            <input name="origin" id="create-location-input" class="form-input"
+                                placeholder="e.g. Paris, France" required autocomplete="off" />
+                            <ul id="create-location-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                        <p id="create-geocode-status"
+                            class="text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400"></p>
+                        <input type="hidden" name="current_lat" id="create-lat" />
+                        <input type="hidden" name="current_lng" id="create-lng" />
+                        <input type="hidden" name="display_name" id="create-display-name" />
+                    </div>
+                    <div>
+                        <label class="field-label">Destination *</label>
+                        <div class="autocomplete-wrap">
+                            <input name="destination" id="create-destination-input" class="form-input"
+                                placeholder="e.g. London, UK" required autocomplete="off" />
+                            <ul id="create-destination-dropdown" class="autocomplete-dropdown hidden"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Delivery Details -->
+                    <div
+                        class="sm:col-span-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider border-b border-brand-200/50 pb-1 mt-3 flex items-center gap-1.5">
+                        <span>📦 Delivery Details</span>
+                    </div>
+                    <div><label class="field-label">Weight (lbs)</label><input name="weight_lbs" type="number"
+                            step="0.01" class="form-input" placeholder="e.g. 5.5" /></div>
+                    <div><label class="field-label">Shipping Date</label><input name="shipping_date"
+                            type="datetime-local" class="form-input" /></div>
+                    <div><label class="field-label">Est. Delivery Date</label><input name="estimated_delivery_date"
+                            type="datetime-local" class="form-input" /></div>
+                    <div class="sm:col-span-2"><label class="field-label">Destination Address</label><textarea
+                            name="destination_address" class="form-input resize-none" rows="2"
+                            placeholder="Street address or delivery building..."></textarea></div>
+                </div>
+                <div><label class="field-label">Description</label><input name="description" class="form-input"
+                        placeholder="Brief package description" /></div>
+                <div id="create-error" class="hidden text-red-500 text-sm"></div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" class="btn-ghost flex-1 modal-close" data-modal="modal-create">Cancel</button>
+                    <button type="submit" class="btn-primary flex-1">Create Package</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div id="modal-event" class="modal-overlay hidden">
+        <div
+            class="glass-lg w-full max-w-md p-5 sm:p-7 space-y-4 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
+            <div class="flex items-center justify-between mb-1">
+                <h2 class="heading-sm text-slate-800 dark:text-slate-100">Add Tracking Event</h2>
+                <button
+                    class="modal-close text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    data-modal="modal-event">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">For package: <span id="event-pkg-id"
+                    class="tracking-chip"></span></p>
+            <form id="form-event" class="space-y-4">
+                <input type="hidden" id="event-pkg-uuid" />
+                <div><label class="field-label">Status Label *</label>
+                    <select name="status_label" class="form-select" required>
+                        <option value="" disabled selected>Select a status…</option>
+                        <option value="Order Placed">Order Placed</option>
+                        <option value="Picked Up">Picked Up</option>
+                        <option value="Processing at Facility">Processing at Facility</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Arrived at Hub">Arrived at Hub</option>
+                        <option value="Departed Hub">Departed Hub</option>
+                        <option value="Customs Clearance">Customs Clearance</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivery Attempted">Delivery Attempted</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Exception">Exception</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Returned to Sender">Returned to Sender</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Location *</label>
+                    <div class="autocomplete-wrap">
+                        <input name="location" id="event-location-input" class="form-input"
+                            placeholder="e.g. 2-50 N Boundary Rd, Queens, NY" required autocomplete="off" />
+                        <ul id="event-location-dropdown" class="autocomplete-dropdown hidden"></ul>
+                    </div>
+                    <p id="event-geocode-status"
+                        class="text-xs mt-1 font-medium text-emerald-600 dark:text-emerald-400"></p>
+                    <input type="hidden" name="current_lat" id="event-lat" />
+                    <input type="hidden" name="current_lng" id="event-lng" />
+                </div>
+
+                <!-- ── Mini-map pin picker (shown once location is geocoded) ── -->
+                <div id="event-minimap-wrap" class="hidden sm:col-span-2">
+                    <label class="field-label flex items-center gap-2">
+                        📍 Fine-tune Pin Location
+                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Drag the pin onto the exact
+                            building</span>
+                    </label>
+                    <div id="event-minimap"
+                        class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 shadow-sm"
+                        style="height:220px;width:100%;"></div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">Drag the marker to correct
+                        the pin position. Coordinates
+                        auto-update.</p>
+                </div>
+
+                <div>
+                    <label class="field-label">Facility / Display Name <span
+                            class="text-xs text-slate-600 dark:text-slate-400 font-medium">(Optional, e.g. USPS Customs
+                            Office)</span></label>
+                    <input name="display_name" id="event-display-name" class="form-input"
+                        placeholder="e.g. USPS International Mail Facility" />
+                </div>
+                <div><label class="field-label">Admin Notes (private)</label><textarea name="notes"
+                        class="form-input resize-none" rows="2"
+                        placeholder="Internal note not visible to recipient"></textarea></div>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="is-delivered" name="is_delivered" class="rounded" />
+                    <label for="is-delivered" class="text-sm text-slate-600 dark:text-slate-300">Mark as
+                        delivered</label>
+                </div>
+                <div id="event-error" class="hidden text-red-500 text-sm"></div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" class="btn-ghost flex-1 modal-close" data-modal="modal-event">Cancel</button>
+                    <button type="submit" class="btn-primary flex-1">Add Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div id="modal-delete" class="modal-overlay hidden">
+        <div
+            class="glass-lg w-full max-w-sm p-5 sm:p-7 text-center space-y-5 animate-slide-up max-h-[90dvh] overflow-y-auto relative">
+            <div class="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto">
+                <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V5a1 1 0 011-1h6a1 1 0 011 1v2" />
+                </svg>
+            </div>
+            <div>
+                <h2 class="heading-sm text-slate-800 dark:text-slate-100 mb-2">Delete Package?</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">This will permanently remove the package <span
+                        id="delete-pkg-id" class="tracking-chip"></span> from the system.</p>
+            </div>
+            <input type="hidden" id="delete-pkg-uuid" />
+            <div class="flex gap-3">
+                <button type="button" class="btn-ghost flex-1 modal-close" data-modal="modal-delete">Cancel</button>
+                <button id="confirm-delete-btn" class="btn-danger flex-1">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="dist/js/theme.min.js" defer></script>
+    <script src="dist/js/api.min.js" defer></script>
+    <script src="dist/js/dashboard.min.js" defer></script>
+</body>
+
+</html>
