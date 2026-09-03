@@ -78,6 +78,9 @@ def create_app() -> FastAPI:
     from app.routers.tracking import router as tracking_router
     application.include_router(tracking_router)
 
+    from app.routers.contact import router as contact_router
+    application.include_router(contact_router)
+
     return application
 
 

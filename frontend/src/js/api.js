@@ -75,6 +75,11 @@ const Api = {
         return this._request('GET', `/api/track/${encodeURIComponent(trackingId)}`);
     },
 
+    // ── Contact Form ──────────────────────────────────────────────────────
+    async submitContactForm(data) {
+        return this._request('POST', '/api/contact', data);
+    },
+
     // ── Packages (Admin) ──────────────────────────────────────────────────
     async listPackages(page = 1, pageSize = 20) {
         return this._request('GET', `/api/packages?page=${page}&page_size=${pageSize}`);

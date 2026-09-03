@@ -247,6 +247,51 @@ def _build_update_text(package: Package, event: TrackingEvent) -> str:
     )
 
 
+# ── Contact form emails ────────────────────────────────────────────────────
+
+def _build_contact_html(data) -> str:
+    header_html = _get_branded_header_html()
+    return f"""\
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#334155;-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;padding:32px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,42,0.08);border:1px solid #e2e8f0;">
+        {header_html}
+        <tr>
+          <td style="padding:32px 28px;">
+            <div style="background-color:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;margin-bottom:24px;">
+              <span style="font-size:12px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;">New Support Message</span>
+            </div>
+            
+            <p><strong>Name:</strong> {data.name}</p>
+            <p><strong>Reply-To:</strong> <a href="mailto:{data.email}">{data.email}</a></p>
+            <p><strong>Topic:</strong> {data.subject}</p>
+            <p><strong>Tracking ID:</strong> {data.tracking_id or 'N/A'}</p>
+            
+            <div style="margin-top:24px;padding:16px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;color:#0f172a;line-height:1.6;white-space:pre-wrap;">{data.message}</div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>"""
+
+
+def _build_contact_text(data) -> str:
+    return (
+        f"New Support Message from GoExpressly.com\n\n"
+        f"Name: {data.name}\n"
+        f"Email: {data.email}\n"
+        f"Topic: {data.subject}\n"
+        f"Tracking ID: {data.tracking_id or 'N/A'}\n\n"
+        f"Message:\n{data.message}\n"
+    )
+
+
 # ── Delivery drivers ───────────────────────────────────────────────────────
 
 def _send_via_smtp(to_email: str, subject: str, html: str, text: str) -> None:
@@ -391,3 +436,33 @@ def send_update_email(
     finally:
         db.close()
 
+def send_contact_email(form_data) -> None:
+    """
+    Dispatch a contact form submission to the support email address.
+    """
+    subject = f"[Support Issue] {form_data.subject.capitalize()} - {form_data.name}"
+    html = _build_contact_html(form_data)
+    text = _build_contact_text(form_data)
+    to_email = "support@goexpressly.com"
+    reply_to = form_data.email
+
+    try:
+        provider = settings.email_provider.lower()
+        if provider == "resend":
+            import resend
+            resend.api_key = settings.resend_api_key
+            resend.Emails.send(
+                {
+                    "from": settings.from_email,
+                    "to": [to_email],
+                    "reply_to": reply_to,
+                    "subject": subject,
+                    "html": html,
+                }
+            )
+        elif provider == "smtp":
+            _send_via_smtp(to_email, subject, html, text)
+        else:
+            print(f"Unknown email provider: {provider}")
+    except Exception as exc:
+        print(f"[email_service] Failed to send contact email: {exc}")
